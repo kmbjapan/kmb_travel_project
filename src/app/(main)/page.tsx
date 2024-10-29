@@ -3,6 +3,7 @@ import { TaskDocument } from "@/models/task";
 import Link from "next/link";
 import { MdAddTask } from "react-icons/md";
 
+// すべてのタスクを取得
 const getAllTasks = async (): Promise<TaskDocument[]> =>{
   const response = await fetch(`${process.env.API_URL}/tasks`, {
     cache: 'no-store',
