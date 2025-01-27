@@ -1,6 +1,9 @@
-const Logo = () => {
-    return <div className="text-xl font-bold">Task Manager</div>;
-  };
-  
-  export default Logo;
-  
+interface LogoProps {
+  title: string;
+}
+
+const Logo: React.FC<LogoProps> = ({ title }) => {
+  return <div className="text-xl font-bold">{title}</div>;
+};
+
+export default Logo;

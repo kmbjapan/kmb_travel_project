@@ -4,7 +4,7 @@ import TopBar from "@/components/TopBar/TopBar";
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex h-screen flex-col">
-      <TopBar />
+      <TopBar title="管理者モード　ADMIN" />
       <div className="flex flex-1">
         <SideMenu />
         <main className="bg-slate-50 flex-1 overflow-auto">{children}</main>

@@ -1,11 +1,14 @@
 import TopNavList from "./NaviList/TopNavList";
-import Logo from "./Logo/Logo"; 
+import Logo from "./Logo/Logo";
 
+interface TopBarProps {
+  title: string;
+}
 
-const TopBar = () => {
+const TopBar: React.FC<TopBarProps> = ({ title }) => {
   return (
-    <div className="w-full bg-gray-800 text-white flex items-center justify-between px-6 py-4">
-      <Logo />
+    <div className="w-full bg-white-800 text-black flex items-center justify-between px-6 py-4 border-b border-gray-300">
+      <Logo title={title} />
       <TopNavList></TopNavList>
     </div>
   );
