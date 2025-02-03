@@ -1,29 +1,77 @@
-import Link from "next/link";
+"use client";
+
+import SearchBar from "@/components/Common/SearchBar";
+import Tables from "@/components/Common/Table";
+import { useState } from "react";
 
 const PackageList = () => {
+  interface Tour {
+    id: number;
+    packageName: string;
+    course: string;
+    maxParticipants: number;
+    departureDate: string;
+    status: string;
+  }
+
+  const [tours, setTours] = useState<Tour[]>([
+    {
+      id: 1,
+      packageName: "キムツアー",
+      course: "湯布院コース",
+      maxParticipants: 47,
+      departureDate: "2025-02-01",
+      status: "完了",
+    },
+
+    {
+      id: 2,
+      packageName: "GOODツアー",
+      course: "湯布院コース",
+      maxParticipants: 47,
+      departureDate: "2025-02-03",
+      status: "出発",
+    },
+
+    {
+      id: 3,
+      packageName: "キムラツアー",
+      course: "湯布院コース",
+      maxParticipants: 43,
+      departureDate: "2025-03-10",
+      status: "出発前",
+    },
+    {
+      id: 4,
+      packageName: "GOODツアー",
+      course: "湯布院コース",
+      maxParticipants: 47,
+      departureDate: "2025-03-15",
+      status: "出発前",
+    },
+  ]);
+
+  // 検索機能の実装するところ
+  const handleSearch = (value: string) => {
+    console.log("検索語:", value);
+  };
+
+  // Fillter
+  const handleFilterChange = (value: string) => {
+    console.log("Fillter:", value);
+  };
+
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">パッケージリスト</h2>
-      <div className="space-y-4">
-        <div className="border p-4 rounded-lg shadow-sm hover:bg-gray-50">
-          <Link
-            href={`/admin/packages/new`}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            パッケージ登録する。
-          </Link>
-        </div>
-        <div className="border p-4 rounded-lg shadow-sm hover:bg-gray-50">
-          <Link
-            href={`/admin/packages/edit`}
-            className="text-blue-600 hover:text-blue-800"
-          >
-            パッケージ修正する。
-          </Link>
-        </div>
-      </div>
+    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6 ">
+      <SearchBar
+        onSearch={(value) => console.log("検索語:", value)}
+        onFilterChange={(value) => console.log("フィルター値:", value)}
+      />
+      <Tables tours={tours} />
     </div>
   );
 };
 
 export default PackageList;
+
+// tailwind sx
