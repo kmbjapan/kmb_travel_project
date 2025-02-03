@@ -70,6 +70,7 @@ const PackageList = () => {
         <SearchBar
           onSearch={(value) => console.log("検索語:", value)}
           onFilterChange={(value) => console.log("フィルター値:", value)}
+          isCreatePage={true}
         />
       </div>
       <div>

@@ -1,5 +1,4 @@
-// 등록된 파라미터로 page 처리하기
-
+import PackageEdit from "@/containers/admin/packages/PackageEdit";
 import AdminLayout from "@/layouts/AdminLayout";
 
 const AdminPackagesEdit = () => {
@@ -7,6 +6,7 @@ const AdminPackagesEdit = () => {
     <AdminLayout>
       <div className="flex flex-col justify-center py-20">
         <h2 className="text-center text-4xl font-bold">パッケージ修正する。</h2>
+        <PackageEdit />
       </div>
     </AdminLayout>
   );

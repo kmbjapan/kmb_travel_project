@@ -58,6 +58,7 @@ const PackageTable = ({ tours }: TourTableProps) => {
             <TableCell>管理</TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
           {tours.map((tour) => (
             <TableRow key={tour.id} hover>
