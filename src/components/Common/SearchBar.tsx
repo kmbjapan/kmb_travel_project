@@ -11,7 +11,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
 
 interface SearchBarProps {
   onSearch?: (value: string) => void;
@@ -48,15 +47,14 @@ const SearchBar = ({ onSearch, onFilterChange }: SearchBarProps) => {
         <MenuItem value="completed">4</MenuItem>
       </TextField>
 
-      {/* <Button
+      <Button
         variant="outlined"
-        startIcon={<AddIcon />}
-        sx={{ ml: "auto" }}
         onClick={() => {
-          console.log("新しい項目追加する。");
+          console.log("検索する。");
         }}
       >
-      </Button> */}
+        検索する
+      </Button>
     </Box>
   );
 };

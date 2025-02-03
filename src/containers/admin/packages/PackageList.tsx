@@ -1,7 +1,10 @@
 "use client";
 
+//Components
 import SearchBar from "@/components/Common/SearchBar";
-import Tables from "@/components/Common/Table";
+import PackageTable from "@/containers/admin/packages/sub/PackageTable";
+
+//Next.js
 import { useState } from "react";
 
 const PackageList = () => {
@@ -63,11 +66,15 @@ const PackageList = () => {
 
   return (
     <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6 ">
-      <SearchBar
-        onSearch={(value) => console.log("検索語:", value)}
-        onFilterChange={(value) => console.log("フィルター値:", value)}
-      />
-      <Tables tours={tours} />
+      <div>
+        <SearchBar
+          onSearch={(value) => console.log("検索語:", value)}
+          onFilterChange={(value) => console.log("フィルター値:", value)}
+        />
+      </div>
+      <div>
+        <PackageTable tours={tours} />
+      </div>
     </div>
   );
 };

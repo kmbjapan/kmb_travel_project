@@ -1,6 +1,6 @@
-"use client";
+"use client"; // use client
 
-//MUI
+//Mui
 import {
   Table,
   TableBody,
@@ -10,11 +10,12 @@ import {
   TableRow,
   Paper,
   Chip,
-  IconButton,
   ButtonGroup,
+  Button,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import LoginIcon from "@mui/icons-material/Login";
+
+//Next.js
+import Link from "next/link";
 
 interface Tour {
   id: number;
@@ -29,7 +30,7 @@ interface TourTableProps {
   tours: Tour[];
 }
 
-const Tables = ({ tours }: TourTableProps) => {
+const PackageTable = ({ tours }: TourTableProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "出発":
@@ -54,16 +55,20 @@ const Tables = ({ tours }: TourTableProps) => {
             <TableCell>最大定員</TableCell>
             <TableCell>出発予定</TableCell>
             <TableCell>状態</TableCell>
-            <TableCell align="right">管理</TableCell>
+            <TableCell>管理</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tours.map((tour) => (
             <TableRow key={tour.id} hover>
               <TableCell>{tour.id}</TableCell>
+
               <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
-                {tour.packageName}
+                <Link href={`/admin/packages/detail/${tour.id}`} passHref>
+                  {tour.packageName}
+                </Link>
               </TableCell>
+
               <TableCell>{tour.course}</TableCell>
               <TableCell>{tour.maxParticipants}名</TableCell>
               <TableCell>{tour.departureDate}</TableCell>
@@ -74,14 +79,14 @@ const Tables = ({ tours }: TourTableProps) => {
                   size="small"
                 />
               </TableCell>
-              <TableCell align="right">
+
+              <TableCell>
                 <ButtonGroup size="small">
-                  <IconButton size="small" color="primary">
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton size="small" color="primary">
-                    <LoginIcon fontSize="small" />
-                  </IconButton>
+                  <Link href={`/admin/checkin/detail/${tour.id}`} passHref>
+                    <Button size="small" color="primary">
+                      チェックイン
+                    </Button>
+                  </Link>
                 </ButtonGroup>
               </TableCell>
             </TableRow>
@@ -92,4 +97,4 @@ const Tables = ({ tours }: TourTableProps) => {
   );
 };
 
-export default Tables;
+export default PackageTable;
