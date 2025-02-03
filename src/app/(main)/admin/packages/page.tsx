@@ -8,7 +8,6 @@ const AdminPackages = () => {
       <div className="flex flex-col justify-center py-20">
         <h2 className="text-center text-4xl font-bold">パッケージ管理</h2>
         <PackageList />
-        {/* <PackageDetail /> */}
       </div>
     </AdminLayout>
   );
