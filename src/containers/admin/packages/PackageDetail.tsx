@@ -92,7 +92,7 @@ const PackageDetail = () => {
   }
 
   return (
-    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6">
+    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6 w-[1">
       <PackageInfoList
         packageName={tour.packageName}
         course={tour.course}

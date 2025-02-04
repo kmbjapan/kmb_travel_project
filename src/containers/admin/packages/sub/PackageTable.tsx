@@ -1,5 +1,6 @@
 "use client"; // use client
 
+import Buttons from "@/components/Common/Buttons";
 //Mui
 import {
   Table,
@@ -84,9 +85,10 @@ const PackageTable = ({ tours }: TourTableProps) => {
               <TableCell>
                 <ButtonGroup size="small">
                   <Link href={`/admin/checkin/detail/${tour.id}`} passHref>
-                    <Button size="small" color="primary">
-                      チェックイン
-                    </Button>
+                    <Buttons
+                      onCheckInListClick={console.log}
+                      isCheckinListVisible={true}
+                    />
                   </Link>
                 </ButtonGroup>
               </TableCell>

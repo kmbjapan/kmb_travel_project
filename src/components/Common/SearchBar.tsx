@@ -1,16 +1,6 @@
-"use client";
-//Next.jsの特性でサーバーComponentsに切り替えがdefaultだけど、OnchangeとOnclickはClientのイベントだから
-// 文法的に "use client"だと表示することが必要である。
-
-//Mui
-import {
-  Box,
-  TextField,
-  MenuItem,
-  Button,
-  InputAdornment,
-} from "@mui/material";
+import { Box, TextField, MenuItem, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Buttons from "./Buttons"; // Buttons 컴포넌트 임포트
 
 interface SearchBarProps {
   onSearch?: (value: string) => void;
@@ -51,27 +41,6 @@ const SearchBar = ({
         <MenuItem value="progress">3</MenuItem>
         <MenuItem value="completed">4</MenuItem>
       </TextField>
-
-      <Button
-        variant="outlined"
-        onClick={() => {
-          console.log("検索する。");
-        }}
-      >
-        検索する
-      </Button>
-
-      {isCreatePage && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            console.log("新規登録ボタンがクリックされました");
-          }}
-        >
-          新規登録
-        </Button>
-      )}
     </Box>
   );
 };

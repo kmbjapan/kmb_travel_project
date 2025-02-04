@@ -5,8 +5,8 @@ const AdminPackagesDetail = () => {
   return (
     <AdminLayout>
       <div className="flex flex-col justify-center items-center py-20">
-        <h2 className="text-center text-4xl font-bold py-10">パッケージ詳細</h2>
-        <div className="w-full max-w-3xl mx-auto">
+        <h2 className="text-center text-3xl  py-10">パッケージ詳細</h2>
+        <div className="w-[90%]">
           <PackageDetail />
         </div>
       </div>

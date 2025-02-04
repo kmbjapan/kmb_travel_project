@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { TravelExplore } from "@mui/icons-material";
+import Buttons from "@/components/Common/Buttons";
 
 interface InfoProps {
   tourId: number;
@@ -54,14 +55,11 @@ const PackageInfoList: React.FC<InfoProps> = ({
   };
 
   return (
-    <Paper className="max-w-3xl p-4 shadow-md rounded-lg mb-4">
+    <Paper className="w-pull p-4 shadow-md rounded-lg mb-4">
       <Box className="flex justify-left ">
         <TravelExplore />
-        <Box className="text-2xl ml-2">パッケージ基本情報</Box>
+        <Box className="text-2xl ml-2 mb-10">パッケージ基本情報</Box>
       </Box>
-      <br></br>
-      <br></br>
-      <br></br>
 
       <Box className="flex justify-between mb-4">
         <Box>
@@ -81,7 +79,7 @@ const PackageInfoList: React.FC<InfoProps> = ({
         </Box>
       </Box>
 
-      <hr className="border-t border-gray-300 my-4" />
+      <Box className="border-t border-gray-300 my-4" />
 
       <Box className="grid grid-cols-1 gap-4 mb-10 ">
         <Box>
@@ -129,14 +127,14 @@ const PackageInfoList: React.FC<InfoProps> = ({
         </Box>
       </Box>
 
-      <hr className="border-t border-gray-300 my-4" />
+      <Box className="border-t border-gray-300 my-4" />
 
-      <Box className="text-right mb-4">
-        <Link href={`/admin/packages/detail/${tourId}`} passHref>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg">
-            詳細を見る
-          </Button>
-        </Link>
+      <Box className="flex justify-between">
+        <Buttons onBackClick={console.log}></Buttons>
+        <Box className="flex justify-end space-x-2">
+          <Buttons onDeleteClick={console.log} isDeleteVisible={true}></Buttons>
+          <Buttons onEditClick={console.log} isEditPage={true}></Buttons>
+        </Box>
       </Box>
     </Paper>
   );

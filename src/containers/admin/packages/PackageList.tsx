@@ -1,5 +1,6 @@
 "use client";
 
+import Buttons from "@/components/Common/Buttons";
 //Components
 import SearchBar from "@/components/Common/SearchBar";
 import PackageTable from "@/containers/admin/packages/sub/PackageTable";
@@ -66,13 +67,20 @@ const PackageList = () => {
 
   return (
     <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6 ">
-      <div>
+      <div className="flex items-center gap-4 mb-6">
         <SearchBar
           onSearch={(value) => console.log("検索語:", value)}
           onFilterChange={(value) => console.log("フィルター値:", value)}
           isCreatePage={true}
         />
+        <div className="mb-5">
+          <Buttons
+            onSearchClick={() => console.log("検索する。")}
+            isSearchVisible={true}
+          />
+        </div>
       </div>
+
       <div>
         <PackageTable tours={tours} />
       </div>
