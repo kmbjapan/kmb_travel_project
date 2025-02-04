@@ -6,14 +6,19 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 
 //Components
-import Info from "@/components/Common/Info";
+import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
 
 interface Tour {
   id: number;
   packageName: string;
   course: string;
-  maxParticipants: number;
+  maxPeople: number;
+  assignedPerson: string;
   departureDate: string;
+  busDriver: string;
+  busInfo1: string;
+  busInfo2: string;
+  tourDescription: string;
   status: string;
 }
 
@@ -24,33 +29,53 @@ const PackageDetail = () => {
       id: 1,
       packageName: "キムツアー",
       course: "湯布院コース",
-      maxParticipants: 47,
-      departureDate: "2025-02-01",
-      status: "完了",
+      maxPeople: 47,
+      assignedPerson: "キム",
+      departureDate: "2025-02-10",
+      busDriver: "鈴木",
+      busInfo1: "久留米つ250",
+      busInfo2: "23-11",
+      tourDescription: "テスト",
+      status: "出発前",
     },
     {
       id: 2,
       packageName: "GOODツアー",
       course: "湯布院コース",
-      maxParticipants: 47,
-      departureDate: "2025-02-03",
+      maxPeople: 39,
+      assignedPerson: "木村",
+      departureDate: "2025-02-04",
+      busDriver: "鈴木",
+      busInfo1: "久留米つ250",
+      busInfo2: "23-11",
+      tourDescription: "テスト",
       status: "出発",
     },
     {
       id: 3,
       packageName: "キムラツアー",
       course: "湯布院コース",
-      maxParticipants: 43,
-      departureDate: "2025-03-10",
-      status: "出発前",
+      maxPeople: 42,
+      assignedPerson: "キム",
+      departureDate: "2025-02-03",
+      busDriver: "鈴木",
+      busInfo1: "久留米つ250",
+      busInfo2: "23-11",
+      tourDescription: "テスト",
+      status: "完了",
     },
     {
       id: 4,
       packageName: "GOODツアー",
       course: "湯布院コース",
-      maxParticipants: 47,
-      departureDate: "2025-03-15",
-      status: "出発前",
+      maxPeople: 43,
+      assignedPerson: "キム",
+      departureDate: "2025-02-01",
+      busDriver: "鈴木",
+      busInfo1: "久留米つ250",
+      busInfo2: "23-11",
+      tourDescription: "テスト",
+      status: "完了",
     },
   ]);
 
@@ -67,12 +92,17 @@ const PackageDetail = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center py-20">
-      <Info
+    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6">
+      <PackageInfoList
         packageName={tour.packageName}
         course={tour.course}
+        maxPeople={tour.maxPeople}
+        assignedPerson={tour.assignedPerson}
         departureDate={tour.departureDate}
-        maxParticipants={tour.maxParticipants}
+        busDriver={tour.busDriver}
+        busInfo1={tour.busInfo1}
+        busInfo2={tour.busInfo2}
+        tourDescription={tour.tourDescription}
         status={tour.status}
         tourId={tour.id}
       />
