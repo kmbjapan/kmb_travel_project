@@ -1,16 +1,38 @@
+"use client";
+
+// Next.js
+import Link from "next/link";
+// React.js
+// MUI
 import TaskCard from "@/components/TaskCard/TaskCard";
 import UserPageTest from "@/containers/user/UserpageTest";
 import { TaskDocument } from "@/models/task";
-import Link from "next/link";
 import { MdAddTask } from "react-icons/md";
+import { useEffect, useState } from "react";
 
 export default async function MainPage() {
+  //　Date連動ステイト
+  const [message, setMessage] = useState("");
+  useEffect(() => {
+    fetch("http://localhost:8080/api/test")
+      .then((response) => response.text())
+      .then((data) => {
+        setMessage(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
   return (
     <div className="text-gray-800 p-8 h-full overflow-y-auto pb-24">
       <header className="flex justify-between item-center">
         <h1 className="text-2xl font-bold flex items-center">
           旅行会社プロジェクト
         </h1>
+        <div>
+          <h1>{message ? message : "Loading..."}</h1>
+        </div>
 
         <Link
           href="/admin"
