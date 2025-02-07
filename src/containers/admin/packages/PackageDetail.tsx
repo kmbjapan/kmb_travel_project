@@ -1,110 +1,79 @@
 "use client";
 
-//React
-import { useState } from "react";
-//Next.js
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-
-//Components
 import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
 
-interface Tour {
-  id: number;
+interface TripPackage {
+  packageId: number;
   packageName: string;
-  course: string;
-  maxPeople: number;
-  assignedPerson: string;
   departureDate: string;
-  busDriver: string;
-  busInfo1: string;
-  busInfo2: string;
-  tourDescription: string;
-  status: string;
+  busNumber1: string;
+  busNumber2: string;
+  status: number; // 0: "出発前", 1: "出発", 2: "完了"
+  currentSeats: number;
+  totalSeats: number;
+  courseName: string;
+  staffName: string;
+  driverName: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const PackageDetail = () => {
-  //　臨時データ
-  const [tours] = useState<Tour[]>([
-    {
-      id: 1,
-      packageName: "キムツアー",
-      course: "湯布院コース",
-      maxPeople: 47,
-      assignedPerson: "キム",
-      departureDate: "2025-02-10",
-      busDriver: "鈴木",
-      busInfo1: "久留米つ250",
-      busInfo2: "23-11",
-      tourDescription: "テスト",
-      status: "出発前",
-    },
-    {
-      id: 2,
-      packageName: "GOODツアー",
-      course: "湯布院コース",
-      maxPeople: 39,
-      assignedPerson: "木村",
-      departureDate: "2025-02-04",
-      busDriver: "鈴木",
-      busInfo1: "久留米つ250",
-      busInfo2: "23-11",
-      tourDescription: "テスト",
-      status: "出発",
-    },
-    {
-      id: 3,
-      packageName: "キムラツアー",
-      course: "湯布院コース",
-      maxPeople: 42,
-      assignedPerson: "キム",
-      departureDate: "2025-02-03",
-      busDriver: "鈴木",
-      busInfo1: "久留米つ250",
-      busInfo2: "23-11",
-      tourDescription: "テスト",
-      status: "完了",
-    },
-    {
-      id: 4,
-      packageName: "GOODツアー",
-      course: "湯布院コース",
-      maxPeople: 43,
-      assignedPerson: "キム",
-      departureDate: "2025-02-01",
-      busDriver: "鈴木",
-      busInfo1: "久留米つ250",
-      busInfo2: "23-11",
-      tourDescription: "テスト",
-      status: "完了",
-    },
-  ]);
-
-  // URL処理
   const { id } = useParams();
 
-  if (!id) {
-    return <div>パッケージのIDがないです。</div>;
-  }
-  const tour = tours.find((t) => t.id === Number(id));
+  const [tripPackage, setTripPackage] = useState<TripPackage | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!tour) {
-    return <div>パッケージを探せないです。</div>;
-  }
+  useEffect(() => {
+    if (!id) {
+      setError("パッケージのIDがありません。");
+      setLoading(false);
+      return;
+    }
+
+    const fetchPackage = async () => {
+      try {
+        const packageId = Number(id);
+        if (isNaN(packageId)) throw new Error("無効なパッケージID");
+        const res = await fetch(
+          `http://localhost:8080/api/packages/detail/${packageId}`
+        );
+        if (!res.ok) throw new Error("パッケージを取得できませんでした。");
+        const data: TripPackage = await res.json();
+        setTripPackage(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPackage();
+  }, [id]);
+
+  if (loading) return <div>ロード中...</div>;
+  if (error) return <div>{error}</div>;
+  if (!tripPackage) return <div>データがありません。</div>;
 
   return (
-    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6 w-[1">
+    <div className="space-y-4 border border-gray-300 p-4 rounded-lg">
       <PackageInfoList
-        packageName={tour.packageName}
-        course={tour.course}
-        maxPeople={tour.maxPeople}
-        assignedPerson={tour.assignedPerson}
-        departureDate={tour.departureDate}
-        busDriver={tour.busDriver}
-        busInfo1={tour.busInfo1}
-        busInfo2={tour.busInfo2}
-        tourDescription={tour.tourDescription}
-        status={tour.status}
-        tourId={tour.id}
+        packageId={tripPackage.packageId}
+        packageName={tripPackage.packageName}
+        departureDate={tripPackage.departureDate}
+        busNumber1={tripPackage.busNumber1}
+        busNumber2={tripPackage.busNumber2}
+        status={tripPackage.status}
+        totalSeats={tripPackage.totalSeats}
+        currentSeats={tripPackage.currentSeats}
+        courseName={tripPackage.courseName}
+        staffName={tripPackage.staffName}
+        driverName={tripPackage.driverName}
+        createdAt={tripPackage.createdAt}
+        updatedAt={tripPackage.updatedAt}
       />
     </div>
   );

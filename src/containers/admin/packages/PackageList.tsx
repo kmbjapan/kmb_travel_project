@@ -4,56 +4,22 @@ import Buttons from "@/components/Common/Buttons";
 //Components
 import SearchBar from "@/components/Common/SearchBar";
 import PackageTable from "@/containers/admin/packages/sub/PackageTable";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 //Next.js
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const PackageList = () => {
-  interface Tour {
-    id: number;
-    packageName: string;
-    course: string;
-    maxParticipants: number;
-    departureDate: string;
-    status: string;
-  }
+  const [pacageDate, setPackageDate] = useState([]);
+  const router = useRouter();
 
-  const [tours, setTours] = useState<Tour[]>([
-    {
-      id: 1,
-      packageName: "キムツアー",
-      course: "湯布院コース",
-      maxParticipants: 47,
-      departureDate: "2025-02-01",
-      status: "完了",
-    },
-
-    {
-      id: 2,
-      packageName: "GOODツアー",
-      course: "湯布院コース",
-      maxParticipants: 47,
-      departureDate: "2025-02-03",
-      status: "出発",
-    },
-
-    {
-      id: 3,
-      packageName: "キムラツアー",
-      course: "湯布院コース",
-      maxParticipants: 43,
-      departureDate: "2025-03-10",
-      status: "出発前",
-    },
-    {
-      id: 4,
-      packageName: "GOODツアー",
-      course: "湯布院コース",
-      maxParticipants: 47,
-      departureDate: "2025-03-15",
-      status: "出発前",
-    },
-  ]);
+  useEffect(() => {
+    fetch("http://localhost:8080/api/packages")
+      .then((res) => res.json())
+      .then((data) => setPackageDate(data))
+      .catch((err) => console.error("fetchingエラー Packages :", err));
+  }, []);
 
   // 検索機能の実装するところ
   const handleSearch = (value: string) => {
@@ -79,10 +45,18 @@ const PackageList = () => {
             isSearchVisible={true}
           />
         </div>
+        <div className="ml-auto">
+          <Link href="/admin/packages/create" passHref>
+            <Buttons
+              onCreateClick={() => router.push("/admin/packages/create")}
+              isCreatePage={true}
+            />
+          </Link>
+        </div>
       </div>
 
       <div>
-        <PackageTable tours={tours} />
+        <PackageTable packages={pacageDate} />
       </div>
     </div>
   );

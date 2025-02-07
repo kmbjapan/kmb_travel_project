@@ -1,139 +1,167 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Chip,
-  Button,
-  Grid,
-  Stack,
-  Paper,
-} from "@mui/material";
-import Link from "next/link";
+"use client";
+
+import React, { useState } from "react";
+import { Typography, Box, Paper, Chip } from "@mui/material";
 import { TravelExplore } from "@mui/icons-material";
 import Buttons from "@/components/Common/Buttons";
+import { useRouter } from "next/navigation";
 
 interface InfoProps {
-  tourId: number;
+  packageId: number;
   packageName: string;
-  course: string;
-  maxPeople: number;
-  assignedPerson: string;
   departureDate: string;
-  busDriver: string;
-  busInfo1: string;
-  busInfo2: string;
-  tourDescription: string;
-  status: string;
+  busNumber1: string;
+  busNumber2: string;
+  status: number; // 백엔드 저장된 상태 (0, 1, 2)
+  currentSeats: number;
+  totalSeats: number;
+  courseName: string;
+  staffName: string;
+  driverName: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
+/** 백엔드에서 전달된 status 값을 그대로 사용 */
+const computeStatus = (status: number): number => {
+  return status;
+};
+
+const getStatusText = (status: number): string => {
+  switch (status) {
+    case 0:
+      return "出発前";
+    case 1:
+      return "出発";
+    case 2:
+      return "完了";
+    default:
+      return "Unknown";
+  }
+};
+
+const getStatusColor = (status: number): string => {
+  switch (status) {
+    case 0:
+      return "bg-blue-100 text-blue-700";
+    case 1:
+      return "bg-green-100 text-green-700";
+    case 2:
+      return "bg-red-100 text-red-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+};
+
 const PackageInfoList: React.FC<InfoProps> = ({
-  tourId,
+  packageId,
   packageName,
-  course,
-  maxPeople,
-  assignedPerson,
   departureDate,
-  busDriver,
-  busInfo1,
-  busInfo2,
-  tourDescription,
+  busNumber1,
+  busNumber2,
   status,
+  currentSeats,
+  totalSeats,
+  courseName,
+  staffName,
+  driverName,
+  createdAt,
+  updatedAt,
 }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "出発":
-        return "bg-green-100 text-green-700";
-      case "出発前":
-        return "bg-blue-100 text-blue-700";
-      case "完了":
-        return "bg-red-100 text-red-700";
-      default:
-        return "bg-gray-100 text-gray-700";
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/packages/detail/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!res.ok) throw new Error("패키지 삭제에 실패했습니다.");
+      window.location.href = "/admin/packages";
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 백엔드에서 받은 상태 값을 그대로 사용
+  const computedStatus = computeStatus(status);
+
   return (
-    <Paper className="w-pull p-4 shadow-md rounded-lg mb-4">
-      <Box className="flex justify-left ">
+    <Paper className="w-full p-4 shadow-md rounded-lg mb-4">
+      <Box className="flex items-center">
         <TravelExplore />
         <Box className="text-2xl ml-2 mb-10">パッケージ基本情報</Box>
       </Box>
-
       <Box className="flex justify-between mb-4">
         <Box>
-          <Typography className="text-gray-500 text-s">状態</Typography>
+          <Typography className="text-gray-500 text-sm">状態</Typography>
           <Box className="mt-1">
             <Chip
-              label={status}
+              label={getStatusText(computedStatus)}
               className={`px-3 py-1 text-xs font-medium rounded-lg ${getStatusColor(
-                status
+                computedStatus
               )}`}
             />
           </Box>
         </Box>
         <Box className="text-right mb-4">
-          <Typography className="text-gray-500 text-s">出発予定</Typography>
+          <Typography className="text-gray-500 text-sm">出発予定</Typography>
           <Typography className="text-sm mt-1">{departureDate}</Typography>
         </Box>
       </Box>
-
       <Box className="border-t border-gray-300 my-4" />
-
-      <Box className="grid grid-cols-1 gap-4 mb-10 ">
+      <Box className="grid grid-cols-1 gap-4 mb-10">
         <Box>
-          <Typography className="text-gray-500 text-2xl ">
+          <Typography className="text-gray-500 text-2xl">
             パッケージ名
           </Typography>
           <Typography className="text-sm mt-1 pl-20">{packageName}</Typography>
         </Box>
       </Box>
-
       <Box className="grid grid-cols-2 gap-4 mb-10 text-right">
         <Box>
-          <Typography className="text-gray-500 text-s ">コース</Typography>
-          <Typography className="text-sm mt-1">{course}</Typography>
+          <Typography className="text-gray-500 text-sm">コース</Typography>
+          <Typography className="text-sm mt-1">{courseName}</Typography>
         </Box>
         <Box>
-          <Typography className="text-gray-500 text-s">担当者</Typography>
-          <Typography className="text-sm mt-1">{assignedPerson}　様</Typography>
+          <Typography className="text-gray-500 text-sm">担当者</Typography>
+          <Typography className="text-sm mt-1">{staffName} 様</Typography>
         </Box>
       </Box>
-
       <Box className="grid grid-cols-2 gap-4 mb-10 text-right">
         <Box>
-          <Typography className="text-gray-500 text-s">バス情報1</Typography>
-          <Typography className="text-sm mt-1">{busInfo1}</Typography>
+          <Typography className="text-gray-500 text-sm">バス情報1</Typography>
+          <Typography className="text-sm mt-1">{busNumber1}</Typography>
         </Box>
         <Box>
-          <Typography className="text-gray-500 text-s">バス情報2</Typography>
-          <Typography className="text-sm mt-1">{busInfo2}</Typography>
+          <Typography className="text-gray-500 text-sm">バス情報2</Typography>
+          <Typography className="text-sm mt-1">{busNumber2}</Typography>
         </Box>
         <Box>
-          <Typography className="text-gray-500 text-s">バス運転手</Typography>
-          <Typography className="text-sm mt-1">{busDriver}　様</Typography>
+          <Typography className="text-gray-500 text-sm">バス運転手</Typography>
+          <Typography className="text-sm mt-1">{driverName} 様</Typography>
         </Box>
       </Box>
-
-      <Box className="grid grid-cols-2 gap-4 mb-10 text-right">
-        <Box>
-          <Typography className="text-gray-500 text-s">最大定員</Typography>
-          <Typography className="text-sm mt-1">{maxPeople}名</Typography>
-        </Box>
-        <Box>
-          <Typography className="text-gray-500 text-s">現在人数</Typography>
-          <Typography className="text-sm mt-1">{tourId}名</Typography>
-        </Box>
-      </Box>
-
       <Box className="border-t border-gray-300 my-4" />
-
       <Box className="flex justify-between">
-        <Buttons onBackClick={console.log}></Buttons>
-        <Box className="flex justify-end space-x-2">
-          <Buttons onDeleteClick={console.log} isDeleteVisible={true}></Buttons>
-          <Buttons onEditClick={console.log} isEditPage={true}></Buttons>
+        <Buttons onBackClick={() => window.history.back()} />
+        <Box className="flex space-x-2">
+          <Buttons
+            onDeleteClick={handleDelete}
+            isDeleteVisible={true}
+            id={packageId}
+          />
+          <Buttons
+            onEditClick={() => router.push(`/admin/packages/edit/${packageId}`)}
+            isEditPage={true}
+          />
         </Box>
       </Box>
     </Paper>

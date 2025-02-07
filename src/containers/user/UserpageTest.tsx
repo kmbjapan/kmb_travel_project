@@ -33,7 +33,7 @@ const UserPageTest = () => {
       title: "日田",
       image:
         "https://trvis.r10s.com/d/strg/ctrl/26/fb6accb7b88163291a9689f0a0700d8ff91c4ec3.47.9.26.3.jpg",
-      description: "かまど地獄で不思議な経験ができるができる！！",
+      description: "かまど地獄で不思議な経験ができる！！",
       price: "89,000円",
     },
     {
@@ -56,8 +56,18 @@ const UserPageTest = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      {/* Hero Section with Carousel */}
-      <Box sx={{ position: "relative", height: "400px", overflow: "hidden" }}>
+      {/* 슬라이드 섹션 */}
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: "500px",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         {featuredDestinations.map((dest, index) => (
           <Box
             key={index}
@@ -69,7 +79,15 @@ const UserPageTest = () => {
               transition: "opacity 1s ease-in-out",
             }}
           >
-            <img src={dest.image} alt={dest.title} />
+            <img
+              src={dest.image}
+              alt={dest.title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover", // ✅ 모든 이미지 크기 동일하게 맞춤
+              }}
+            />
             <Box
               sx={{
                 position: "absolute",
@@ -78,16 +96,15 @@ const UserPageTest = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                textAlign: "center",
+                color: "white",
               }}
             >
-              <Box sx={{ textAlign: "center", color: "white" }}>
-                <Typography
-                  variant="h2"
-                  sx={{ fontSize: "40px", fontWeight: "bold", mb: 4 }}
-                >
+              <Box>
+                <Typography variant="h2" sx={{ fontSize: "40px", mb: 2 }}>
                   {dest.title}
                 </Typography>
-                <Typography variant="h5" sx={{ mb: 6 }}>
+                <Typography variant="h5" sx={{ mb: 4 }}>
                   {dest.description}
                 </Typography>
                 <Button
@@ -95,21 +112,27 @@ const UserPageTest = () => {
                   sx={{
                     backgroundColor: "#1976d2",
                     "&:hover": { backgroundColor: "#1565c0" },
+                    fontSize: "18px", // ✅ 버튼 크기 통일
+                    px: 4,
+                    py: 1.5,
                   }}
                 >
-                  詳細見る
+                  詳細を見る
                 </Button>
               </Box>
             </Box>
           </Box>
         ))}
+
+        {/* 왼쪽 이동 버튼 */}
         <IconButton
           sx={{
             position: "absolute",
-            left: 4,
+            left: 10,
             top: "50%",
             transform: "translateY(-50%)",
-            backgroundColor: "white",
+            backgroundColor: "rgba(255,255,255,0.7)",
+            "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
           }}
           onClick={() =>
             setCurrentImageIndex((prev) =>
@@ -119,13 +142,15 @@ const UserPageTest = () => {
         >
           <ChevronLeftIcon />
         </IconButton>
+
         <IconButton
           sx={{
             position: "absolute",
-            right: 4,
+            right: 10,
             top: "50%",
             transform: "translateY(-50%)",
-            backgroundColor: "white",
+            backgroundColor: "rgba(255,255,255,0.7)",
+            "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
           }}
           onClick={() =>
             setCurrentImageIndex((prev) =>
@@ -137,50 +162,124 @@ const UserPageTest = () => {
         </IconButton>
       </Box>
 
-      {/* Featured Packages */}
-      <Container sx={{ py: 16 }}>
-        <Typography
-          variant="h4"
-          sx={{ textAlign: "center", mb: 12, fontWeight: "bold" }}
-        >
-          流行旅行パッケージ
+      {/* 여행 패키지 섹션 */}
+      <Container
+        sx={{
+          py: 12,
+          textAlign: "center",
+          backgroundColor: "#f5f5f5",
+          borderRadius: "10px",
+        }}
+      >
+        <Typography variant="h4" sx={{ textAlign: "center", mb: 6 }}>
+          人気旅行パッケージ
         </Typography>
         <Grid container spacing={4}>
           {featuredDestinations.map((dest, index) => (
-            <Grid item xs={12} md={4} key={index}>
+            <Grid item xs={12} sm={6} md={4} key={index}>
               <Card
                 sx={{
-                  transform: "scale(1)",
+                  boxShadow: 3,
+                  borderRadius: "10px",
                   transition: "transform 0.3s",
                   "&:hover": { transform: "scale(1.05)" },
                 }}
               >
                 <CardMedia
                   component="img"
-                  height="200"
+                  height="220"
                   image={dest.image}
                   alt={dest.title}
+                  sx={{ objectFit: "cover" }} // ✅ 카드 이미지 크기 통일
                 />
                 <CardContent>
-                  <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+                  <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
                     {dest.title}
                   </Typography>
-                  <Typography sx={{ color: "text.secondary", mb: 4 }}>
+                  <Typography
+                    sx={{ color: "text.secondary", mb: 2, textAlign: "center" }}
+                  >
                     {dest.description}
                   </Typography>
                   <Typography
                     variant="h6"
-                    sx={{ color: "primary.main", fontWeight: "bold" }}
+                    sx={{
+                      color: "primary.main",
+                      textAlign: "center",
+                    }}
                   >
                     {dest.price}から
                   </Typography>
-                  <Button variant="outlined" sx={{ mt: 4, width: "100%" }}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      width: "100%",
+                      fontSize: "16px", // ✅ 버튼 크기 통일
+                    }}
+                  >
                     予約する
                   </Button>
                 </CardContent>
               </Card>
             </Grid>
           ))}
+        </Grid>
+      </Container>
+
+      {/* 회사 정보 섹션 */}
+      <Container
+        sx={{
+          py: 10,
+          textAlign: "center",
+          backgroundColor: "#f5f5f5",
+          borderRadius: "10px",
+          marginTop: "100px",
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 4 }}>
+          会社情報
+        </Typography>
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ boxShadow: 3, borderRadius: "10px" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  会社名
+                </Typography>
+                <Typography color="text.secondary">
+                  株式会社 旅行プロジェクト
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ boxShadow: 3, borderRadius: "10px" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  住所
+                </Typography>
+                <Typography color="text.secondary">
+                  東京都渋谷区○○-○○
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ boxShadow: 3, borderRadius: "10px" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  連絡先
+                </Typography>
+                <Typography color="text.secondary">
+                  電話: 03-1234-5678
+                </Typography>
+                <Typography color="text.secondary">
+                  メール: contact@travel.co.jp
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
       </Container>
     </Box>

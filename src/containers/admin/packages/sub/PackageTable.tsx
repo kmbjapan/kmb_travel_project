@@ -1,7 +1,6 @@
-"use client"; // use client
+"use client"; // 클라이언트 컴포넌트임을 명시
 
 import Buttons from "@/components/Common/Buttons";
-//Mui
 import {
   Table,
   TableBody,
@@ -12,39 +11,57 @@ import {
   Paper,
   Chip,
   ButtonGroup,
-  Button,
 } from "@mui/material";
-
-//Next.js
 import Link from "next/link";
 
-interface Tour {
-  id: number;
+// 백엔드 데이터 DTO에 맞춘 인터페이스 (이름은 PackageData 혹은 다른 이름으로 정의)
+interface PackageData {
+  packageId: number;
   packageName: string;
-  course: string;
-  maxParticipants: number;
+  busNumber1: string;
+  busNumber2: string;
+  status: number;
   departureDate: string;
-  status: string;
+  totalSeats: number;
+  courseName: string;
+  driverName: string;
+  staffName: string;
 }
 
-interface TourTableProps {
-  tours: Tour[];
+// PackageTable 컴포넌트가 받는 props 인터페이스
+interface PackageTableProps {
+  packages: PackageData[];
 }
 
-const PackageTable = ({ tours }: TourTableProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "出発":
-        return "success";
-      case "出発前":
-        return "info";
-      case "完了":
-        return "error";
-      default:
-        return "default";
-    }
-  };
+const getStatusText = (status: number): string => {
+  switch (status) {
+    case 0:
+      return "出発前";
+    case 1:
+      return "出発";
+    case 2:
+      return "完了";
+    default:
+      return "Unknown";
+  }
+};
 
+const getStatusColor = (status: number): string => {
+  // getStatusColor는 MUI Chip 컴포넌트의 color prop에 맞춰서 설정할 수 있도록
+  // 여기서는 단순히 문자열을 반환하는데, 실제 프로젝트에서는 MUI의 색상 속성에 맞춰 조정해야 합니다.
+  switch (status) {
+    case 0:
+      return "info";
+    case 1:
+      return "success";
+    case 2:
+      return "error";
+    default:
+      return "default";
+  }
+};
+
+const PackageTable = ({ packages }: PackageTableProps) => {
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table sx={{ minWidth: 650 }}>
@@ -59,41 +76,62 @@ const PackageTable = ({ tours }: TourTableProps) => {
             <TableCell>管理</TableCell>
           </TableRow>
         </TableHead>
-
         <TableBody>
-          {tours.map((tour) => (
-            <TableRow key={tour.id} hover>
-              <TableCell>{tour.id}</TableCell>
-
-              <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
-                <Link href={`/admin/packages/detail/${tour.id}`} passHref>
-                  {tour.packageName}
-                </Link>
-              </TableCell>
-
-              <TableCell>{tour.course}</TableCell>
-              <TableCell>{tour.maxParticipants}名</TableCell>
-              <TableCell>{tour.departureDate}</TableCell>
-              <TableCell>
-                <Chip
-                  label={tour.status}
-                  color={getStatusColor(tour.status) as any}
-                  size="small"
-                />
-              </TableCell>
-
-              <TableCell>
-                <ButtonGroup size="small">
-                  <Link href={`/admin/checkin/detail/${tour.id}`} passHref>
-                    <Buttons
-                      onCheckInListClick={console.log}
-                      isCheckinListVisible={true}
-                    />
+          {packages.map((pkg) => {
+            // departureDate에 따라 동적으로 상태를 계산합니다.
+            const computedStatus = pkg.status;
+            return (
+              <TableRow key={pkg.packageId} hover>
+                <TableCell>{pkg.packageId}</TableCell>
+                <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
+                  <Link
+                    href={`/admin/packages/detail/${pkg.packageId}`}
+                    passHref
+                  >
+                    {pkg.packageName}
                   </Link>
-                </ButtonGroup>
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+                <TableCell>{pkg.courseName}</TableCell>
+                <TableCell>{pkg.totalSeats} 名</TableCell>
+                <TableCell>{pkg.departureDate}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={getStatusText(computedStatus)}
+                    color={getStatusColor(computedStatus) as any}
+                    size="small"
+                  />
+                </TableCell>
+                <TableCell>
+                  <ButtonGroup size="small" className="mr-1">
+                    <Link
+                      href={`/admin/packages/detail/${pkg.packageId}`}
+                      passHref
+                    >
+                      <Buttons
+                        onPackageDetailClick={() =>
+                          console.log(`Click Detail Package ${pkg.packageId}`)
+                        }
+                        isPackageDetailVisble={true}
+                      />
+                    </Link>
+                  </ButtonGroup>
+                  <ButtonGroup size="small">
+                    <Link
+                      href={`/admin/checkin/detail/${pkg.packageId}`}
+                      passHref
+                    >
+                      <Buttons
+                        onCheckInListClick={() =>
+                          console.log(`Check-in for package ${pkg.packageId}`)
+                        }
+                        isCheckinListVisible={true}
+                      />
+                    </Link>
+                  </ButtonGroup>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
