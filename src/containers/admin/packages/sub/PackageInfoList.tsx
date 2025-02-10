@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import dayjs from "dayjs";
 import { Typography, Box, Paper, Chip } from "@mui/material";
 import { TravelExplore } from "@mui/icons-material";
 import Buttons from "@/components/Common/Buttons";
@@ -12,7 +13,7 @@ interface InfoProps {
   departureDate: string;
   busNumber1: string;
   busNumber2: string;
-  status: number; // 백엔드 저장된 상태 (0, 1, 2)
+  status: number;
   currentSeats: number;
   totalSeats: number;
   courseName: string;
@@ -22,7 +23,6 @@ interface InfoProps {
   updatedAt: string;
 }
 
-/** 백엔드에서 전달된 status 값을 그대로 사용 */
 const computeStatus = (status: number): number => {
   return status;
 };
@@ -90,7 +90,6 @@ const PackageInfoList: React.FC<InfoProps> = ({
     }
   };
 
-  // 백엔드에서 받은 상태 값을 그대로 사용
   const computedStatus = computeStatus(status);
 
   return (
@@ -113,7 +112,9 @@ const PackageInfoList: React.FC<InfoProps> = ({
         </Box>
         <Box className="text-right mb-4">
           <Typography className="text-gray-500 text-sm">出発予定</Typography>
-          <Typography className="text-sm mt-1">{departureDate}</Typography>
+          <Typography className="text-sm mt-1">
+            {departureDate ? dayjs(departureDate).format("YYYY-MM-DD") : "未定"}{" "}
+          </Typography>
         </Box>
       </Box>
       <Box className="border-t border-gray-300 my-4" />
@@ -150,7 +151,8 @@ const PackageInfoList: React.FC<InfoProps> = ({
         </Box>
       </Box>
       <Box className="border-t border-gray-300 my-4" />
-      <Box className="flex justify-between">
+
+      <Box className="flex justify-between mt-4">
         <Buttons onBackClick={() => window.history.back()} />
         <Box className="flex space-x-2">
           <Buttons

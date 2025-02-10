@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dayjs from "dayjs"; // ✅ dayjs 추가
 import { useParams } from "next/navigation";
 import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
 
@@ -22,7 +23,6 @@ interface TripPackage {
 
 const PackageDetail = () => {
   const { id } = useParams();
-
   const [tripPackage, setTripPackage] = useState<TripPackage | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +43,20 @@ const PackageDetail = () => {
         );
         if (!res.ok) throw new Error("パッケージを取得できませんでした。");
         const data: TripPackage = await res.json();
-        setTripPackage(data);
+
+        // ✅ 날짜 데이터를 dayjs로 변환
+        setTripPackage({
+          ...data,
+          departureDate: data.departureDate
+            ? dayjs(data.departureDate).format("YYYY-MM-DD")
+            : "未定",
+          createdAt: data.createdAt
+            ? dayjs(data.createdAt).format("YYYY-MM-DD HH:mm")
+            : "不明",
+          updatedAt: data.updatedAt
+            ? dayjs(data.updatedAt).format("YYYY-MM-DD HH:mm")
+            : "不明",
+        });
       } catch (err) {
         setError((err as Error).message);
       } finally {

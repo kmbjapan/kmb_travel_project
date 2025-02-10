@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import PackageForm from "./sub/PackageForm";
 
@@ -14,16 +15,27 @@ const PackageEdit = () => {
       fetch(`http://localhost:8080/api/packages/detail/${id}`)
         .then((res) => {
           if (!res.ok) {
-            throw new Error("패키지 정보를 불러올 수 없습니다.");
+            throw new Error("パッケージ情報を呼んで来られないです。");
           }
           return res.json();
         })
         .then((data) => {
-          setInitialData(data);
+          setInitialData({
+            ...data,
+            departureDate: data.departureDate
+              ? dayjs(data.departureDate).format("YYYY-MM-DD")
+              : null,
+            createdAt: data.createdAt
+              ? dayjs(data.createdAt).format("YYYY-MM-DD HH:mm")
+              : "不明",
+            updatedAt: data.updatedAt
+              ? dayjs(data.updatedAt).format("YYYY-MM-DD HH:mm")
+              : "不明",
+          });
           setLoading(false);
         })
         .catch((error) => {
-          console.error("패키지 정보 로드 오류:", error);
+          console.error("パッケージ情報ロードエラー:", error);
           setLoading(false);
         });
     }
@@ -36,27 +48,30 @@ const PackageEdit = () => {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify({
+            ...updatedData,
+            departureDate: updatedData.departureDate
+              ? dayjs(updatedData.departureDate).format("YYYY-MM-DD")
+              : "",
+          }),
         }
       );
       if (!response.ok) {
-        throw new Error("패키지 수정에 실패하였습니다.");
+        throw new Error("パッケージの修正に失敗しました。");
       }
       const result = await response.json();
-      console.log("패키지 수정 성공:", result);
-      // 수정 완료 후 패키지 목록으로 이동 (또는 상세 페이지 새로고침)
+      console.log("パッケージ修正成功:", result);
       window.location.href = "/admin/packages";
     } catch (error) {
-      console.error("패키지 수정 오류:", error);
-    } finally {
+      console.error("パッケージ修正エラー:", error);
     }
   };
 
   if (loading) {
-    return <p>데이터를 불러오는 중입니다...</p>;
+    return <p>データを呼び出す中...</p>;
   }
   if (!initialData) {
-    return <p>패키지 데이터를 찾을 수 없습니다.</p>;
+    return <p>パッケージがなし。</p>;
   }
 
   return <PackageForm initialData={initialData} onSubmit={handleUpdate} />;

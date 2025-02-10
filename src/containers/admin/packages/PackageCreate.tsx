@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import dayjs from "dayjs";
 import PackageForm from "./sub/PackageForm";
 
 const PackageCreate = () => {
@@ -11,12 +12,12 @@ const PackageCreate = () => {
       busNumber2: data.busNumber2,
       totalSeats: Number(data.totalSeats),
       departureDate: data.departureDate
-        ? new Date(data.departureDate).toISOString().split("T")[0]
+        ? dayjs(data.departureDate).format("YYYY-MM-DD") // ✅ dayjs 적용
         : "",
       driverId: data.driverId,
       courseId: data.courseId,
       staffId: data.staffId,
-      status: 0, // 신규 등록 시 기본 상태
+      status: 0,
     };
 
     try {
@@ -36,7 +37,6 @@ const PackageCreate = () => {
       }
 
       const result = await response.json();
-      // console.log("作成成功:", result);
       window.location.href = "/admin/packages";
       alert("パッケージが作成されました！");
     } catch (error) {

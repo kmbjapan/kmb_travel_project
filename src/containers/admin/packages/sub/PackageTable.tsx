@@ -1,5 +1,6 @@
-"use client"; // 클라이언트 컴포넌트임을 명시
+"use client";
 
+import dayjs from "dayjs";
 import Buttons from "@/components/Common/Buttons";
 import {
   Table,
@@ -27,7 +28,6 @@ interface PackageData {
   staffName: string;
 }
 
-// PackageTable 컴포넌트가 받는 props 인터페이스
 interface PackageTableProps {
   packages: PackageData[];
 }
@@ -46,8 +46,6 @@ const getStatusText = (status: number): string => {
 };
 
 const getStatusColor = (status: number): string => {
-  // getStatusColor는 MUI Chip 컴포넌트의 color prop에 맞춰서 설정할 수 있도록
-  // 여기서는 단순히 문자열을 반환하는데, 실제 프로젝트에서는 MUI의 색상 속성에 맞춰 조정해야 합니다.
   switch (status) {
     case 0:
       return "info";
@@ -77,7 +75,6 @@ const PackageTable = ({ packages }: PackageTableProps) => {
         </TableHead>
         <TableBody>
           {packages.map((pkg) => {
-            // departureDate에 따라 동적으로 상태를 계산합니다.
             const computedStatus = pkg.status;
             return (
               <TableRow key={pkg.packageId} hover>
@@ -92,7 +89,11 @@ const PackageTable = ({ packages }: PackageTableProps) => {
                 </TableCell>
                 <TableCell>{pkg.courseName}</TableCell>
                 <TableCell>{pkg.totalSeats} 名</TableCell>
-                <TableCell>{pkg.departureDate}</TableCell>
+                <TableCell>
+                  {pkg.departureDate
+                    ? dayjs(pkg.departureDate).format("YYYY-MM-DD")
+                    : "未定"}
+                </TableCell>
                 <TableCell>
                   <Chip
                     label={getStatusText(computedStatus)}

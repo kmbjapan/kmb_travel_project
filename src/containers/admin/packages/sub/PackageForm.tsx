@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 import {
   TextField,
   Button,
@@ -19,7 +21,7 @@ type PackageFormProps = {
   initialData?: {
     packageName: string;
     totalSeats: string;
-    departureDate: Date | null;
+    departureDate: string | null;
     busNumber1: string;
     busNumber2: string;
     driverId?: string | number;
@@ -109,10 +111,10 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
     }));
   };
 
-  const handleDateChange = (date: Date | null) => {
+  const handleDateChange = (date: Dayjs | null) => {
     setFormData((prevState) => ({
       ...prevState,
-      departureDate: date,
+      departureDate: date ? date.format("YYYY-MM-DD") : null,
     }));
   };
 
@@ -238,11 +240,11 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
             className="bg-gray-50"
           />
           {/* 출발 예정일 */}
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="出発予定"
               value={
-                formData.departureDate ? new Date(formData.departureDate) : null
+                formData.departureDate ? dayjs(formData.departureDate) : null
               }
               onChange={handleDateChange}
               slotProps={{
