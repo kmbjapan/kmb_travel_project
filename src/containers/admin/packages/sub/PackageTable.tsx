@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-// 백엔드 데이터 DTO에 맞춘 인터페이스 (이름은 PackageData 혹은 다른 이름으로 정의)
 interface PackageData {
   packageId: number;
   packageName: string;

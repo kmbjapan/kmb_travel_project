@@ -1,10 +1,16 @@
 import SideMenu from "@/components/SideMenu/SideMenu";
 import TopBar from "@/components/TopBar/TopBar";
+import { IconBaseProps } from "react-icons";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex h-screen flex-col">
-      <TopBar />
+      <TopBar
+        title={""}
+        icon={function (props: IconBaseProps): JSX.Element {
+          throw new Error("Function not implemented.");
+        }}
+      />
       <div className="flex flex-1">
         <SideMenu />
         <main className="bg-slate-50 flex-1 overflow-auto">{children}</main>
