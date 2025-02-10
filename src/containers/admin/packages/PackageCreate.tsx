@@ -12,7 +12,7 @@ const PackageCreate = () => {
       busNumber2: data.busNumber2,
       totalSeats: Number(data.totalSeats),
       departureDate: data.departureDate
-        ? dayjs(data.departureDate).format("YYYY-MM-DD") // ✅ dayjs 적용
+        ? dayjs(data.departureDate).format("YYYY-MM-DD")
         : "",
       driverId: data.driverId,
       courseId: data.courseId,

@@ -56,7 +56,6 @@ const UserPageTest = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
-      {/* 슬라이드 섹션 */}
       <Box
         sx={{
           position: "relative",
@@ -85,7 +84,7 @@ const UserPageTest = () => {
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover", // ✅ 모든 이미지 크기 동일하게 맞춤
+                objectFit: "cover",
               }}
             />
             <Box
@@ -112,7 +111,7 @@ const UserPageTest = () => {
                   sx={{
                     backgroundColor: "#1976d2",
                     "&:hover": { backgroundColor: "#1565c0" },
-                    fontSize: "18px", // ✅ 버튼 크기 통일
+                    fontSize: "18px",
                     px: 4,
                     py: 1.5,
                   }}
@@ -124,7 +123,6 @@ const UserPageTest = () => {
           </Box>
         ))}
 
-        {/* 왼쪽 이동 버튼 */}
         <IconButton
           sx={{
             position: "absolute",
@@ -162,7 +160,6 @@ const UserPageTest = () => {
         </IconButton>
       </Box>
 
-      {/* 여행 패키지 섹션 */}
       <Container
         sx={{
           py: 12,
@@ -227,7 +224,6 @@ const UserPageTest = () => {
         </Grid>
       </Container>
 
-      {/* 회사 정보 섹션 */}
       <Container
         sx={{
           py: 10,

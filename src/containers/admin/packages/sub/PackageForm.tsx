@@ -71,7 +71,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
           "http://localhost:8080/api/packages/reference-data"
         );
         if (!res.ok) {
-          throw new Error("참조 데이터를 가져오지 못했습니다.");
+          throw new Error("データの呼び出し失敗。");
         }
         const data: ReferenceData = await res.json();
         setReferenceData(data);
@@ -82,16 +82,15 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
     fetchReferenceData();
   }, []);
 
-  // 옵션 데이터가 완전히 로드되지 않았다면 로딩 메시지 렌더링
   if (
     referenceData.courses.length === 0 ||
     referenceData.drivers.length === 0 ||
     referenceData.staffs.length === 0
   ) {
-    return <p>참조 데이터를 불러오는 중입니다...</p>;
+    return <p>データを呼び出す中</p>;
   }
 
-  // Select 변경 핸들러
+  // Selectを変更するやつ
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -100,7 +99,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
     }));
   };
 
-  // 텍스트필드 변경 핸들러
+  // TextFieldを変更するやつ
   const handleTextFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -144,7 +143,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
       </Typography>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* 패키지명 */}
+          {/* パッケージの名 */}
           <TextField
             fullWidth
             label="パッケージ名"
@@ -168,7 +167,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
               <MenuItem value="2">完了</MenuItem>
             </Select>
           </FormControl>
-          {/* 코스 선택 */}
+          {/* コースの選択 */}
           <FormControl fullWidth variant="outlined" className="bg-gray-50">
             <InputLabel id="course-select-label">コース</InputLabel>
             <Select
@@ -188,7 +187,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
               ))}
             </Select>
           </FormControl>
-          {/* 드라이버 선택 */}
+          {/* ドライバー選択 */}
           <FormControl fullWidth variant="outlined" className="bg-gray-50">
             <InputLabel id="driver-select-label">ドライバー</InputLabel>
             <Select
@@ -208,7 +207,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
               ))}
             </Select>
           </FormControl>
-          {/* 담당자 선택 */}
+          {/* スタッフ選択 */}
           <FormControl fullWidth variant="outlined" className="bg-gray-50">
             <InputLabel id="staff-select-label">担当者</InputLabel>
             <Select
@@ -228,7 +227,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
               ))}
             </Select>
           </FormControl>
-          {/* 최대 정원 */}
+          {/* 最大定員 */}
           <TextField
             fullWidth
             label="最大定員"
@@ -239,7 +238,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
             variant="outlined"
             className="bg-gray-50"
           />
-          {/* 출발 예정일 */}
+          {/* 出発予定の日 */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="出発予定"
@@ -252,7 +251,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
               }}
             />
           </LocalizationProvider>
-          {/* 버스 정보1 */}
+          {/* バス情報1 */}
           <TextField
             fullWidth
             label="バス情報1"
@@ -262,7 +261,7 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
             variant="outlined"
             className="bg-gray-50"
           />
-          {/* 버스 정보2 */}
+          {/* バス情報2 */}
           <TextField
             fullWidth
             label="バス情報2"

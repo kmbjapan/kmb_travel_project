@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dayjs from "dayjs"; // ✅ dayjs 추가
+import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
 
@@ -44,7 +44,6 @@ const PackageDetail = () => {
         if (!res.ok) throw new Error("パッケージを取得できませんでした。");
         const data: TripPackage = await res.json();
 
-        // ✅ 날짜 데이터를 dayjs로 변환
         setTripPackage({
           ...data,
           departureDate: data.departureDate
