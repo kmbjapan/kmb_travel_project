@@ -34,7 +34,7 @@ const NavList = () => {
     {
       id: 4,
       label: "バスドライバー管理",
-      link: "/admin/drivers",
+      link: "/admin/driver",
       icon: <DiAptana className="size-5" />,
     },
   ];
