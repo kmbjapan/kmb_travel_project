@@ -50,6 +50,7 @@ const PackageList = () => {
             <Buttons
               onCreateClick={() => router.push("/admin/packages/create")}
               isCreatePage={true}
+              title="新規登録"
             />
           </Link>
         </div>
