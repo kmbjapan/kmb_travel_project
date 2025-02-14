@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import { Delete, Edit, AddCircle } from "@mui/icons-material";
+import { useState } from "react";
 
 interface ButtonsProps {
   onSearchClick?: () => void;
@@ -17,6 +18,7 @@ interface ButtonsProps {
   isPackageDetailVisble?: boolean;
   id?: number;
   title?: string;
+  isCheckInPage?: boolean;
 }
 
 const Buttons = ({
@@ -35,7 +37,13 @@ const Buttons = ({
   isPackageDetailVisble,
   title,
   id,
+  isCheckInPage,
 }: ButtonsProps) => {
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const toggleCheckIn = () => {
+    setIsCheckedIn((prev) => !prev);
+  };
+
   return (
     <div className="flex gap-4">
       {/* 検索 */}
@@ -93,6 +101,18 @@ const Buttons = ({
           onClick={onPackageDetailClick}
         >
           詳細
+        </Button>
+      )}
+
+      {/* チェックリスト状況 */}
+      {isCheckInPage && (
+        <Button
+          variant="contained"
+          // isCheckedIn が true なら青（primary）、false なら赤（error）を指定
+          color={isCheckedIn ? "success" : "error"}
+          onClick={toggleCheckIn}
+        >
+          {isCheckedIn ? "チェックイン済み" : "チェックイン前"}
         </Button>
       )}
     </div>

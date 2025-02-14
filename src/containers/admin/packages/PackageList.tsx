@@ -39,7 +39,7 @@ const PackageList = () => {
           onFilterChange={(value) => console.log("フィルター値:", value)}
           isCreatePage={true}
         />
-        <div className="mb-5">
+        <div className="mt-auto">
           <Buttons
             onSearchClick={() => console.log("検索する。")}
             isSearchVisible={true}
