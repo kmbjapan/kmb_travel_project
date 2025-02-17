@@ -33,7 +33,6 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
   const router = useRouter();
 
   useEffect(() => {
-    //
     const url = id
       ? `http://localhost:8080/api/checkin?packageId=${id}`
       : "http://localhost:8080/api/checkin";
@@ -110,13 +109,15 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
         <CheckInTable checkinList={checkinData} />
       </div>
       <div className="mt-5">
-        <Link href="/admin/checkin/create" passHref>
-          <Buttons
-            onCreateClick={() => router.push("/admin/checkin/create")}
-            isCreatePage={true}
-            title="新規顧客登録する"
-          />
-        </Link>
+        <Buttons
+          onCreateClick={() =>
+            router.push(
+              id ? `/admin/checkin/create/${id}` : "/admin/checkin/create"
+            )
+          }
+          isCreatePage={true}
+          title="新規顧客登録する"
+        />
       </div>
     </div>
   );

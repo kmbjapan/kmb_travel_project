@@ -123,20 +123,33 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ initialData, onSubmit }) => {
       <h2 className="text-xl font-semibold mb-4">
         {initialData ? "チェックイン編集" : "チェックイン登録"}
       </h2>
+
       <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-        {/* 出発予定日の選択 */}
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
+        {/* 出発予定日 - 既に選択されている場合は読み取り専用 */}
+        {initialData?.packageDepature ? (
+          <TextField
+            fullWidth
             label="出発予定日"
-            value={
-              formData.packageDepature ? dayjs(formData.packageDepature) : null
-            }
-            onChange={handleDateChange}
-            slotProps={{
-              textField: { fullWidth: true, variant: "outlined" },
-            }}
+            value={initialData.packageDepature}
+            variant="outlined"
+            InputProps={{ readOnly: true }}
           />
-        </LocalizationProvider>
+        ) : (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="出発予定日"
+              value={
+                formData.packageDepature
+                  ? dayjs(formData.packageDepature)
+                  : null
+              }
+              onChange={handleDateChange}
+              slotProps={{
+                textField: { fullWidth: true, variant: "outlined" },
+              }}
+            />
+          </LocalizationProvider>
+        )}
 
         {/* パッケージ選択 */}
         <FormControl fullWidth>
