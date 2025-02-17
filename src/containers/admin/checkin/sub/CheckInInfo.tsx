@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Buttons from "@/components/Common/Buttons";
 // status関数
 import { updateCheckInStatus } from "@/services/checkInService";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface CheckInData {
   checkinId: number;
@@ -145,6 +146,7 @@ const CheckInInfoList: React.FC<CheckInData> = ({
           status={checkInStatus}
           onStatusToggle={toggleCheckInStatus}
         />
+        {loading && <CircularProgress size={24} style={{ marginLeft: 8 }} />}
       </Box>
 
       {/* アクションボタン */}

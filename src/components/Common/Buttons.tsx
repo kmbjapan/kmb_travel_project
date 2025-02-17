@@ -44,6 +44,7 @@ const Buttons = ({
   onStatusToggle,
 }: ButtonsProps) => {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
+
   const toggleCheckIn = () => {
     setIsCheckedIn((prev) => !prev);
   };

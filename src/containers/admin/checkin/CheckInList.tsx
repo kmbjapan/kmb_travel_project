@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+
 import Buttons from "@/components/Common/Buttons";
 import SearchBar from "@/components/Common/SearchBar";
 import Link from "next/link";
@@ -32,15 +33,15 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const params = id ? { packageId: Number(id) } : {};
-    axios
-      .get("http://localhost:8080/api/checkin", { params })
-      .then((response) => {
-        setCheckinData(response.data);
-      })
-      .catch((error) => {
-        console.error("axios 요청 에러:", error);
-      });
+    //
+    const url = id
+      ? `http://localhost:8080/api/checkin?packageId=${id}`
+      : "http://localhost:8080/api/checkin";
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setCheckinData(data))
+      .catch((err) => console.error("fetching 에러:", err));
   }, [id]);
 
   const packageInfo =

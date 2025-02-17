@@ -5,6 +5,7 @@ import Buttons from "@/components/Common/Buttons";
 import {
   ButtonGroup,
   Chip,
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -39,6 +40,7 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
   // 로컬 상태에 props로 받은 checkinList를 저장
   const [localCheckinList, setLocalCheckinList] =
     useState<CheckInData[]>(checkinList);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
   // 부모로부터 checkinList가 변경되면 로컬 상태 업데이트
   useEffect(() => {
@@ -49,8 +51,9 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
   const toggleStatus = async (checkinId: number, currentStatus: number) => {
     const newStatus = currentStatus === 0 ? 1 : 0;
     try {
+      setLoadingId(checkinId); // 업데이트 시작: 해당 항목을 로딩 상태로 설정
       await updateCheckInStatus(checkinId, newStatus);
-      // 로컬 상태 업데이트: 해당 체크인 항목의 status 값을 변경
+      // 로컬 상태 업데이트: 해당 체크인 항목의 status 값 변경
       setLocalCheckinList((prevList) =>
         prevList.map((item) =>
           item.checkinId === checkinId ? { ...item, status: newStatus } : item
@@ -58,10 +61,11 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
       );
     } catch (error) {
       console.error("상태 업데이트 에러:", error);
+    } finally {
+      setLoadingId(null); // 업데이트 종료: 로딩 상태 초기화
     }
   };
 
-  // 로컬 상태를 기준으로 정렬
   const sortedCheckinList = [...localCheckinList].sort(
     (a, b) => a.checkinId - b.checkinId
   );
@@ -103,13 +107,17 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
                       isPackageDetailVisble={true}
                     />
                   </Link> */}
-                  <Buttons
-                    isCheckInPage={true}
-                    status={cki.status}
-                    onStatusToggle={() =>
-                      toggleStatus(cki.checkinId, cki.status)
-                    }
-                  />
+                  {loadingId === cki.checkinId ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    <Buttons
+                      isCheckInPage={true}
+                      status={cki.status}
+                      onStatusToggle={() =>
+                        toggleStatus(cki.checkinId, cki.status)
+                      }
+                    />
+                  )}
                 </ButtonGroup>
               </TableCell>
             </TableRow>
