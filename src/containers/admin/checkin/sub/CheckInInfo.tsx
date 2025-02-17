@@ -6,6 +6,8 @@ import { Typography, Box, Paper, Button } from "@mui/material";
 import { Person, Sync, Phone, Mail } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import Buttons from "@/components/Common/Buttons";
+// status関数
+import { updateCheckInStatus } from "@/services/checkInService";
 
 interface CheckInData {
   checkinId: number;
@@ -39,6 +41,23 @@ const CheckInInfoList: React.FC<CheckInData> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // サーバーでまらったstatusの値がDefalt
+  const [checkInStatus, setCheckInStatus] = useState<number>(status);
+
+  const toggleCheckInStatus = async () => {
+    const newStatus = checkInStatus === 0 ? 1 : 0;
+    try {
+      setLoading(true);
+      await updateCheckInStatus(checkinId, newStatus);
+      setCheckInStatus(newStatus);
+    } catch (err) {
+      console.error("status update error:", err);
+      setError("status updateできない.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     setLoading(true);
     try {
@@ -60,14 +79,6 @@ const CheckInInfoList: React.FC<CheckInData> = ({
 
   const router = useRouter();
   // 初期状態は "before"（チェックイン前）とする
-  const [checkInStatus, setCheckInStatus] = useState<string>("before");
-
-  // チェックイン状態のトグル関数
-  const toggleCheckInStatus = () => {
-    setCheckInStatus((prevStatus) =>
-      prevStatus === "before" ? "checked-in" : "before"
-    );
-  };
 
   return (
     <Paper className="w-full p-6 shadow-md rounded-lg bg-white">
@@ -129,19 +140,11 @@ const CheckInInfoList: React.FC<CheckInData> = ({
         <Typography variant="h6" className="font-semibold flex items-center">
           <Sync className="mr-2" /> 状態
         </Typography>
-        <Button
-          variant="contained"
-          className={`mt-2 px-6 py-2 rounded-lg ${
-            checkInStatus === "checked-in"
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "bg-red-500 hover:bg-red-600"
-          } text-white`}
-          onClick={toggleCheckInStatus}
-        >
-          {checkInStatus === "checked-in"
-            ? "チェックイン済み"
-            : "チェックイン前"}
-        </Button>
+        <Buttons
+          isCheckInPage={true}
+          status={checkInStatus}
+          onStatusToggle={toggleCheckInStatus}
+        />
       </Box>
 
       {/* アクションボタン */}

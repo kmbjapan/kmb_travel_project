@@ -19,6 +19,8 @@ interface ButtonsProps {
   id?: number;
   title?: string;
   isCheckInPage?: boolean;
+  status?: number;
+  onStatusToggle?: () => void;
 }
 
 const Buttons = ({
@@ -38,6 +40,8 @@ const Buttons = ({
   title,
   id,
   isCheckInPage,
+  status,
+  onStatusToggle,
 }: ButtonsProps) => {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const toggleCheckIn = () => {
@@ -108,11 +112,10 @@ const Buttons = ({
       {isCheckInPage && (
         <Button
           variant="contained"
-          // isCheckedIn が true なら青（primary）、false なら赤（error）を指定
-          color={isCheckedIn ? "success" : "error"}
-          onClick={toggleCheckIn}
+          color={status === 1 ? "success" : "error"}
+          onClick={onStatusToggle}
         >
-          {isCheckedIn ? "チェックイン済み" : "チェックイン前"}
+          {status === 1 ? "チェックイン済み" : "チェックイン前"}
         </Button>
       )}
     </div>

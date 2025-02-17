@@ -45,6 +45,7 @@ const CheckInEdit: React.FC = () => {
   // チェックイン更新API呼び出しハンドラ
   const handleUpdate = async (updatedData: CheckInFormData) => {
     try {
+      // axios 사용하기
       const response = await fetch(
         `http://localhost:8080/api/checkin/edit/${id}`,
         {

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Buttons from "@/components/Common/Buttons";
 import {
   ButtonGroup,
@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@mui/material";
 import Link from "next/link";
+import { updateCheckInStatus } from "@/services/checkInService";
 
 interface CheckInData {
   checkinId: number;
@@ -34,39 +35,34 @@ interface CheckIntableProps {
   checkinList: CheckInData[];
 }
 
-// ダミーデータの例
-// const dummyPackages = [
-//   {
-//     checkInId: 1,
-//     guestName: "キム",
-//     guestCount: 4,
-//     guestPhone: "080-1234-5678",
-//     packageDepature: "2025-03-01",
-//     specialRequests: "足の障害があります。",
-//     status: "active",
-//   },
-//   {
-//     checkInId: 2,
-//     guestName: "木村良平",
-//     guestCount: 3,
-//     guestPhone: "090-1234-5678",
-//     packageDepature: "2025-04-15",
-//     specialRequests: "子供が2歳です。",
-//     status: "inactive",
-//   },
-//   {
-//     checkInId: 3,
-//     guestName: "松下零落",
-//     guestCount: 2,
-//     guestPhone: "070-1234-5678",
-//     packageDepature: "2025-04-15",
-//     specialRequests: "",
-//     status: "inactive",
-//   },
-// ];
-
 const CheckInTable = ({ checkinList }: CheckIntableProps) => {
-  const sortedCheckinList = [...checkinList].sort(
+  // 로컬 상태에 props로 받은 checkinList를 저장
+  const [localCheckinList, setLocalCheckinList] =
+    useState<CheckInData[]>(checkinList);
+
+  // 부모로부터 checkinList가 변경되면 로컬 상태 업데이트
+  useEffect(() => {
+    setLocalCheckinList(checkinList);
+  }, [checkinList]);
+
+  // 체크인 상태 토글 함수
+  const toggleStatus = async (checkinId: number, currentStatus: number) => {
+    const newStatus = currentStatus === 0 ? 1 : 0;
+    try {
+      await updateCheckInStatus(checkinId, newStatus);
+      // 로컬 상태 업데이트: 해당 체크인 항목의 status 값을 변경
+      setLocalCheckinList((prevList) =>
+        prevList.map((item) =>
+          item.checkinId === checkinId ? { ...item, status: newStatus } : item
+        )
+      );
+    } catch (error) {
+      console.error("상태 업데이트 에러:", error);
+    }
+  };
+
+  // 로컬 상태를 기준으로 정렬
+  const sortedCheckinList = [...localCheckinList].sort(
     (a, b) => a.checkinId - b.checkinId
   );
 
@@ -107,7 +103,13 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
                       isPackageDetailVisble={true}
                     />
                   </Link> */}
-                  <Buttons isCheckInPage={true}></Buttons>
+                  <Buttons
+                    isCheckInPage={true}
+                    status={cki.status}
+                    onStatusToggle={() =>
+                      toggleStatus(cki.checkinId, cki.status)
+                    }
+                  />
                 </ButtonGroup>
               </TableCell>
             </TableRow>
