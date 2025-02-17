@@ -81,7 +81,7 @@ const PackageInfoList: React.FC<InfoProps> = ({
           method: "DELETE",
         }
       );
-      if (!res.ok) throw new Error("패키지 삭제에 실패했습니다.");
+      if (!res.ok) throw new Error("削除を失敗しました。");
       window.location.href = "/admin/packages";
     } catch (err) {
       setError((err as Error).message);

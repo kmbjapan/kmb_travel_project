@@ -66,6 +66,10 @@ interface CheckIntableProps {
 // ];
 
 const CheckInTable = ({ checkinList }: CheckIntableProps) => {
+  const sortedCheckinList = [...checkinList].sort(
+    (a, b) => a.checkinId - b.checkinId
+  );
+
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table sx={{ minWidth: 650 }} aria-label="check-in table">
@@ -81,7 +85,7 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {checkinList.map((cki) => (
+          {sortedCheckinList.map((cki) => (
             <TableRow key={cki.checkinId} hover>
               <TableCell>{cki.checkinId}</TableCell>
               <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>

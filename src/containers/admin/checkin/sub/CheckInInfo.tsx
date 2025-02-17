@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { Typography, Box, Paper, Button } from "@mui/material";
 import { Person, Sync, Phone, Mail } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
+import Buttons from "@/components/Common/Buttons";
 
 interface CheckInData {
   checkinId: number;
@@ -35,6 +36,28 @@ const CheckInInfoList: React.FC<CheckInData> = ({
   packageName,
   staffName,
 }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/checkin/delete/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!res.ok) throw new Error("削除を失敗しました。");
+      alert("顧客情報を削除しました。");
+      window.location.href = "/admin/checkin";
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const router = useRouter();
   // 初期状態は "before"（チェックイン前）とする
   const [checkInStatus, setCheckInStatus] = useState<string>("before");
@@ -123,16 +146,18 @@ const CheckInInfoList: React.FC<CheckInData> = ({
 
       {/* アクションボタン */}
       <Box className="flex justify-between mt-4">
-        <Button variant="outlined" onClick={() => router.back()}>
-          戻る
-        </Button>
+        <Buttons onBackClick={() => router.push(`/admin/checkin`)} />
+
         <Box className="flex space-x-2">
-          <Button variant="contained" color="primary">
-            編集
-          </Button>
-          <Button variant="contained" color="error">
-            削除
-          </Button>
+          <Buttons
+            onEditClick={() => router.push(`/admin/checkin/edit/${checkinId}`)}
+            isEditPage={true}
+          />
+          <Buttons
+            onDeleteClick={handleDelete}
+            isDeleteVisible={true}
+            id={checkinId}
+          />
         </Box>
       </Box>
     </Paper>

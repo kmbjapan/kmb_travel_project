@@ -30,7 +30,7 @@ const CheckinCreate = () => {
       }
 
       await response.json();
-      alert("チェックインが正常に登録されました！");
+      alert("顧客情報が登録されました！");
       window.location.href = "/admin/checkin"; // 登録後のリダイレクト
     } catch (error) {
       console.error("エラー:", error);

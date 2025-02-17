@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 import Buttons from "@/components/Common/Buttons";
 
-// 체크인 폼 데이터 타입
-interface CheckInFormData {
+// チェックインフォームのデータ型
+export interface CheckInFormData {
   guestName: string;
   guestCount: number;
   guestPhone: string;
@@ -26,31 +26,37 @@ interface CheckInFormData {
   packageId: string;
 }
 
-type CheckInFormProps = {
-  onSubmit?: (data: CheckInFormData) => void;
-};
-
-// 패키지 데이터 타입
+// パッケージデータ型
 interface Package {
   packageId: number;
   packageName: string;
 }
 
-const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState<CheckInFormData>({
-    guestName: "",
-    guestCount: 1,
-    guestPhone: "",
-    guestEmail: "",
-    specialRequests: "",
-    packageDepature: null,
-    packageId: "",
-  });
+// チェックインフォームコンポーネントのプロパティ型
+interface CheckInFormProps {
+  // 編集時は初期データを渡す（新規登録の場合はundefined）
+  initialData?: CheckInFormData;
+  onSubmit: (data: CheckInFormData) => void;
+}
 
-  // 패키지 리스트 상태
+const CheckInForm: React.FC<CheckInFormProps> = ({ initialData, onSubmit }) => {
+  // 初期データが存在すればその値を、なければデフォルト値を設定
+  const [formData, setFormData] = useState<CheckInFormData>(
+    initialData || {
+      guestName: "",
+      guestCount: 1,
+      guestPhone: "",
+      guestEmail: "",
+      specialRequests: "",
+      packageDepature: null,
+      packageId: "",
+    }
+  );
+
+  // 利用可能なパッケージのリスト状態
   const [availablePackages, setAvailablePackages] = useState<Package[]>([]);
 
-  // 출발일이 변경되면 해당 날짜의 패키지를 조회
+  // 出発予定日が変更されたら、その日付に対応するパッケージを取得する
   useEffect(() => {
     const fetchPackagesByDate = async () => {
       if (!formData.packageDepature) {
@@ -62,29 +68,29 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
           `http://localhost:8080/api/packages/by-date?departure=${formData.packageDepature}`
         );
         if (!res.ok) {
-          throw new Error("パッケージデータを取得できませんでした。");
+          throw new Error("パッケージデータの取得に失敗しました。");
         }
         const packages: Package[] = await res.json();
         setAvailablePackages(packages);
       } catch (error) {
-        console.error("パッケージの取得エラー:", error);
+        console.error("パッケージ取得エラー:", error);
       }
     };
 
     fetchPackagesByDate();
   }, [formData.packageDepature]);
 
-  // 출발일 변경 핸들러
+  // 日付変更ハンドラ
   const handleDateChange = (date: Dayjs | null) => {
     const formattedDate = date ? date.format("YYYY-MM-DD") : null;
     setFormData((prevState) => ({
       ...prevState,
       packageDepature: formattedDate,
-      packageId: "",
+      packageId: "", // 日付変更時はパッケージ選択をリセット
     }));
   };
 
-  // 텍스트 필드 변경 핸들러
+  // テキストフィールド変更ハンドラ
   const handleTextFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -95,7 +101,7 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
     }));
   };
 
-  // 패키지 선택 핸들러
+  // パッケージ選択変更ハンドラ
   const handlePackageChange = (e: SelectChangeEvent<string>) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -103,26 +109,25 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
     }));
   };
 
-  // 제출 핸들러
+  // フォーム送信ハンドラ
   const submitForm = () => {
     if (!formData.packageId) {
       alert("パッケージを選択してください。");
       return;
     }
-    if (onSubmit) {
-      onSubmit(formData);
-    }
+    onSubmit(formData);
   };
 
   return (
     <div className="max-w-2xl mx-auto mt-10 bg-white shadow-md rounded-lg p-6 border mb-20">
-      <h2 className="text-xl font-semibold mb-4">チェックイン登録</h2>
-
+      <h2 className="text-xl font-semibold mb-4">
+        {initialData ? "チェックイン編集" : "チェックイン登録"}
+      </h2>
       <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
         {/* 出発予定日の選択 */}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            label="出発予定"
+            label="出発予定日"
             value={
               formData.packageDepature ? dayjs(formData.packageDepature) : null
             }
@@ -154,8 +159,8 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
           </Select>
         </FormControl>
 
-        {/* 顧客基本情報 */}
-        <h3 className="text-lg font-semibold">顧客基本情報</h3>
+        {/* 顧客情報入力 */}
+        <h3 className="text-lg font-semibold">顧客情報</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
             fullWidth
@@ -167,14 +172,13 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
           />
           <TextField
             fullWidth
-            label="連絡先"
+            label="電話番号"
             name="guestPhone"
             variant="outlined"
             value={formData.guestPhone}
             onChange={handleTextFieldChange}
           />
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TextField
             fullWidth
@@ -194,7 +198,6 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
             onChange={handleTextFieldChange}
           />
         </div>
-
         <div className="grid grid-cols-1 gap-4">
           <TextField
             fullWidth
@@ -208,11 +211,19 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ onSubmit }) => {
           />
         </div>
 
-        <Buttons
-          isCreatePage={true}
-          onCreateClick={submitForm}
-          title="登録する"
-        />
+        {initialData ? (
+          <Buttons
+            isEditPage={true}
+            onEditClick={submitForm}
+            title="更新する"
+          />
+        ) : (
+          <Buttons
+            isCreatePage={true}
+            onCreateClick={submitForm}
+            title="登録する"
+          />
+        )}
       </form>
     </div>
   );

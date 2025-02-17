@@ -117,7 +117,7 @@ const PackageTable = ({ packages }: PackageTableProps) => {
                   </ButtonGroup>
                   <ButtonGroup size="small">
                     <Link
-                      href={`/admin/checkin/detail/${pkg.packageId}`}
+                      href={`/admin/checkin/packages/${pkg.packageId}`}
                       passHref
                     >
                       <Buttons
