@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,7 +16,7 @@ const TopNavItem: React.FC<NavItemProps> = ({ label, link, icon }) => {
     <Link
       href={link}
       className={`flex items-center p-4 font-medium hover:bg-gray-700 ${
-        pathname === link ? 'bg-gray-600 border-b-4 border-b-green-500' : ''
+        pathname === link ? "bg-gray-300 border-b-4 border-b-blue-500" : ""
       }`}
     >
       <div className="mr-2">{icon}</div>

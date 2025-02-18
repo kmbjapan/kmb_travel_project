@@ -12,8 +12,12 @@ import {
   Paper,
   Chip,
   ButtonGroup,
+  Checkbox,
+  Box,
 } from "@mui/material";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { CheckBox } from "@mui/icons-material";
 
 interface PackageData {
   packageId: number;
@@ -59,12 +63,85 @@ const getStatusColor = (status: number): string => {
 };
 
 const PackageTable = ({ packages }: PackageTableProps) => {
+  // 2.CheckBox関連
+  // 2-1.配列の形で全体の情報を盛り込む
+  const [selected, setSelected] = useState<number[]>([]);
+
+  // 2-2. CheckBox押すとpackageIdを選択したりとか、
+  const handleCheckboxClick = (packageId: number) => {
+    setSelected((prevSelected) =>
+      prevSelected.includes(packageId)
+        ? prevSelected.filter((id) => id !== packageId)
+        : [...prevSelected, packageId]
+    );
+  };
+  // 2-3. CheckBox押すと全体選択する。
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelecteds = packages.map((pkg) => pkg.packageId);
+      setSelected(newSelecteds);
+    } else {
+      setSelected([]);
+    }
+  };
+
+  // ...
+  useEffect(() => {
+    console.log("  ID 체쿠:", selected);
+  }, [selected]);
+
+  // 2-4. CheckBoxについてDeleteHandlerAPI要請
+  const handleDeleteSelected = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/packages/delete",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ packageIds: selected }),
+        }
+      );
+      if (response.ok) {
+        console.log("Delete Sucessed");
+        alert("**パッケージ**を削除しました。");
+        window.location.href = "/admin/packages";
+      } else {
+        // console.error("Delete Failed", response.status);
+        const errorData = await response.json();
+        alert(errorData.message || "パッケージで**顧客名簿**があります。");
+      }
+    } catch (error) {
+      console.error("Delete Error", error);
+      alert("削除のエラー");
+    }
+  };
+
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
-            <TableCell>番号</TableCell>
+            <TableCell padding="checkbox">
+              {/* 2.CheckBox関連::全体クリックする */}
+              <Checkbox
+                checked={
+                  packages.length > 0 && selected.length === packages.length
+                }
+                indeterminate={
+                  selected.length > 0 && selected.length < packages.length
+                }
+                onChange={handleSelectAllClick}
+                sx={{
+                  color: "blue",
+                  "&.Mui-checked": {
+                    color: "blue",
+                  },
+                }}
+              />
+            </TableCell>
+            <TableCell>NO</TableCell>
             <TableCell>パッケージ名</TableCell>
             <TableCell>コース</TableCell>
             <TableCell>最大定員</TableCell>
@@ -74,11 +151,27 @@ const PackageTable = ({ packages }: PackageTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {packages.map((pkg) => {
+          {packages.map((pkg, index) => {
+            const isItemSelected = selected.includes(pkg.packageId);
             const computedStatus = pkg.status;
             return (
               <TableRow key={pkg.packageId} hover>
-                <TableCell>{pkg.packageId}</TableCell>
+                {/*  2.CheckBox関連:: 個別クリックする */}
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={isItemSelected}
+                    onChange={() => handleCheckboxClick(pkg.packageId)}
+                    sx={{
+                      color: "blue",
+                      "&.Mui-checked": {
+                        color: "blue",
+                      },
+                    }}
+                  />
+                </TableCell>
+                {/*  フロントで番号を分ける */}
+                {/* <TableCell>{pkg.packageId}</TableCell> */}
+                <TableCell>{index + 1}</TableCell>
                 <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
                   <Link
                     href={`/admin/packages/detail/${pkg.packageId}`}
@@ -134,6 +227,7 @@ const PackageTable = ({ packages }: PackageTableProps) => {
           })}
         </TableBody>
       </Table>
+      <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} />
     </TableContainer>
   );
 };

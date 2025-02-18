@@ -6,7 +6,7 @@ interface ButtonsProps {
   onSearchClick?: () => void;
   onCreateClick?: () => void;
   onBackClick?: () => void;
-  onDeleteClick?: (id: number) => void;
+  onDeleteClick?: (id?: number) => void;
   onEditClick?: () => void;
   onCheckInListClick?: () => void;
   onPackageDetailClick?: () => void;
@@ -66,7 +66,7 @@ const Buttons = ({
       )}
 
       {/* 削除 */}
-      {isDeleteVisible && onDeleteClick && id && (
+      {isDeleteVisible && onDeleteClick && (
         <Button
           variant="outlined"
           onClick={() => onDeleteClick(id)}

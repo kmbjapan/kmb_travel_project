@@ -104,11 +104,7 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
           </div>
         </div>
       )}
-
-      <div>
-        <CheckInTable checkinList={checkinData} />
-      </div>
-      <div className="mt-5">
+      <div className="">
         <Buttons
           onCreateClick={() =>
             router.push(
@@ -118,6 +114,9 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
           isCreatePage={true}
           title="新規顧客登録する"
         />
+      </div>
+      <div>
+        <CheckInTable checkinList={checkinData} />
       </div>
     </div>
   );

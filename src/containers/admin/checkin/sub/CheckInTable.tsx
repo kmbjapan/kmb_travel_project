@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Buttons from "@/components/Common/Buttons";
 import {
   ButtonGroup,
+  Checkbox,
   Chip,
   CircularProgress,
   Paper,
@@ -70,11 +71,82 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
     (a, b) => a.checkinId - b.checkinId
   );
 
+  // 2.CheckBox関連
+  // 2-1.配列の形で全体の情報を盛り込む
+  const [selected, setSelected] = useState<number[]>([]);
+
+  // 2-2. CheckBox押すとpackageIdを選択したりとか、
+  const handleCheckboxClick = (packageId: number) => {
+    setSelected((prevSelected) =>
+      prevSelected.includes(packageId)
+        ? prevSelected.filter((id) => id !== packageId)
+        : [...prevSelected, packageId]
+    );
+  };
+  // 2-3. CheckBox押すと全体選択する。
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelecteds = checkinList.map((ckl) => ckl.checkinId);
+      setSelected(newSelecteds);
+    } else {
+      setSelected([]);
+    }
+  };
+
+  // ...
+  useEffect(() => {
+    console.log("  ID 체쿠:", selected);
+  }, [selected]);
+
+  // 2-4. CheckBoxについてDeleteHandlerAPI要請
+  const handleDeleteSelected = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/checkin/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ checkInIds: selected }),
+      });
+      if (response.ok) {
+        console.log("Delete Sucessed");
+        alert("**顧客名簿**を削除しました。");
+        window.location.href = "/admin/checkin";
+      } else {
+        // console.error("Delete Failed", response.status);
+        const errorData = await response.json();
+        alert(errorData.message || "削除のError。");
+      }
+    } catch (error) {
+      console.error("Delete Error", error);
+      alert("削除のエラー");
+    }
+  };
+
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table sx={{ minWidth: 650 }} aria-label="check-in table">
         <TableHead>
           <TableRow>
+            <TableCell padding="checkbox">
+              {/* 2.CheckBox関連::全体クリックする */}
+              <Checkbox
+                checked={
+                  checkinList.length > 0 &&
+                  selected.length === checkinList.length
+                }
+                indeterminate={
+                  selected.length > 0 && selected.length < checkinList.length
+                }
+                onChange={handleSelectAllClick}
+                sx={{
+                  color: "blue",
+                  "&.Mui-checked": {
+                    color: "blue",
+                  },
+                }}
+              />
+            </TableCell>
             <TableCell>番号</TableCell>
             <TableCell>顧客名</TableCell>
             <TableCell>人数</TableCell>
@@ -85,45 +157,54 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {sortedCheckinList.map((cki) => (
-            <TableRow key={cki.checkinId} hover>
-              <TableCell>{cki.checkinId}</TableCell>
-              <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
-                <Link href={`/admin/checkin/detail/${cki.checkinId}`}>
-                  {cki.guestName}
-                </Link>
-              </TableCell>
-              <TableCell>{cki.guestCount}</TableCell>
-              <TableCell>{cki.guestPhone} </TableCell>
-              <TableCell>{cki.departureDate}</TableCell>
-              <TableCell>{cki.specialRequests}</TableCell>
-              <TableCell>
-                <ButtonGroup size="small">
-                  {/* <Link href={`/admin/packages/detail/${cki.checkInId}`}>
-                    <Buttons
-                      onPackageDetailClick={() =>
-                        console.log(`パッケージ詳細クリック: ${cki.checkInId}`)
-                      }
-                      isPackageDetailVisble={true}
-                    />
-                  </Link> */}
-                  {loadingId === cki.checkinId ? (
-                    <CircularProgress size={24} />
-                  ) : (
-                    <Buttons
-                      isCheckInPage={true}
-                      status={cki.status}
-                      onStatusToggle={() =>
-                        toggleStatus(cki.checkinId, cki.status)
-                      }
-                    />
-                  )}
-                </ButtonGroup>
-              </TableCell>
-            </TableRow>
-          ))}
+          {sortedCheckinList.map((cki, index) => {
+            const isItemSelected = selected.includes(cki.checkinId);
+            return (
+              <TableRow key={cki.checkinId} hover>
+                {/* 2.CheckBox関連:: 個別クリックする */}
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={isItemSelected}
+                    onChange={() => handleCheckboxClick(cki.checkinId)}
+                    sx={{
+                      color: "blue",
+                      "&.Mui-checked": {
+                        color: "blue",
+                      },
+                    }}
+                  />
+                </TableCell>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
+                  <Link href={`/admin/checkin/detail/${cki.checkinId}`}>
+                    {cki.guestName}
+                  </Link>
+                </TableCell>
+                <TableCell>{cki.guestCount}</TableCell>
+                <TableCell>{cki.guestPhone}</TableCell>
+                <TableCell>{cki.departureDate}</TableCell>
+                <TableCell>{cki.specialRequests}</TableCell>
+                <TableCell>
+                  <ButtonGroup size="small">
+                    {loadingId === cki.checkinId ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      <Buttons
+                        isCheckInPage={true}
+                        status={cki.status}
+                        onStatusToggle={() =>
+                          toggleStatus(cki.checkinId, cki.status)
+                        }
+                      />
+                    )}
+                  </ButtonGroup>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
+      <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} />
     </TableContainer>
   );
 };

@@ -45,17 +45,16 @@ const PackageList = () => {
             isSearchVisible={true}
           />
         </div>
-        <div className="ml-auto">
-          <Link href="/admin/packages/create" passHref>
-            <Buttons
-              onCreateClick={() => router.push("/admin/packages/create")}
-              isCreatePage={true}
-              title="新規登録"
-            />
-          </Link>
-        </div>
       </div>
-
+      <div className="ml-auto">
+        <Link href="/admin/packages/create" passHref>
+          <Buttons
+            onCreateClick={() => router.push("/admin/packages/create")}
+            isCreatePage={true}
+            title="新規登録"
+          />
+        </Link>
+      </div>
       <div>
         <PackageTable packages={pacageDate} />
       </div>
