@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import CheckInTable from "./sub/CheckInTable";
 import InputBox from "@/components/Common/InputBox"; // 불필요한 import는 제거
+import CSVUploadButton from "@/components/Common/CSVUploadButton";
+import CSVExportButton from "@/components/Common/CSVExportButton";
+import CSVModal from "@/components/Common/CSVModal";
 
 interface CheckInData {
   checkinId: number;
@@ -30,6 +33,7 @@ interface CheckInListProps {
 
 const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
   const [checkinData, setCheckinData] = useState<CheckInData[]>([]);
+  const [isCSVModalOpen, setCSVModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -115,6 +119,29 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
           title="新規顧客登録する"
         />
       </div>
+      {/* CSVのDOWNLOADボタン */}
+      {/* CSV管理MODAL */}
+      <CSVModal
+        isOpen={isCSVModalOpen}
+        onClose={() => setCSVModalOpen(false)}
+      />
+
+      {/* CSV管理ボタン */}
+      <div className="flex justify-end">
+        <button
+          className="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 shadow"
+          onClick={() => setCSVModalOpen(true)}
+        >
+          CSV管理
+        </button>
+      </div>
+
+      {/* CSVのDOWNLOD,UPLOADボタン */}
+      <div className="hidden">
+        <CSVExportButton />
+        <CSVUploadButton />
+      </div>
+
       <div>
         <CheckInTable checkinList={checkinData} />
       </div>
