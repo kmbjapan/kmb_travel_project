@@ -30,6 +30,7 @@ interface PackageData {
   courseName: string;
   driverName: string;
   staffName: string;
+  packageCode?: string;
 }
 
 interface PackageTableProps {
@@ -154,6 +155,7 @@ const PackageTable = ({ packages }: PackageTableProps) => {
           {packages.map((pkg, index) => {
             const isItemSelected = selected.includes(pkg.packageId);
             const computedStatus = pkg.status;
+            const safePackageCode = pkg.packageCode ?? "N/A"; // ✅ 기본값 "N/A" 설정
             return (
               <TableRow key={pkg.packageId} hover>
                 {/*  2.CheckBox関連:: 個別クリックする */}

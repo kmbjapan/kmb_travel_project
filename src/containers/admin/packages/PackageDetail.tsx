@@ -19,6 +19,7 @@ interface TripPackage {
   driverName: string;
   createdAt: string;
   updatedAt: string;
+  packageCode: string;
 }
 
 const PackageDetail = () => {
@@ -86,6 +87,7 @@ const PackageDetail = () => {
         driverName={tripPackage.driverName}
         createdAt={tripPackage.createdAt}
         updatedAt={tripPackage.updatedAt}
+        packageCode={tripPackage.packageCode}
       />
     </div>
   );

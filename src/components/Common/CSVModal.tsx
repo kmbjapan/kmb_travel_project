@@ -20,17 +20,14 @@ const CSVModal: React.FC<CSVModalProps> = ({ isOpen, onClose }) => {
           CSVのダウンロードまたはアップロードを行います。
         </p>
 
-        {/* CSV 다운로드 버튼 */}
         <div className="mb-4">
           <CSVExportButton />
         </div>
 
-        {/* CSV 업로드 버튼 */}
         <div className="mb-4">
           <CSVUploadButton />
         </div>
 
-        {/* 닫기 버튼 */}
         <div className="text-right">
           <button
             className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg shadow"

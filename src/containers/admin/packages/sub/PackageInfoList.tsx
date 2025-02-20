@@ -21,6 +21,7 @@ interface InfoProps {
   driverName: string;
   createdAt: string;
   updatedAt: string;
+  packageCode: string;
 }
 
 const computeStatus = (status: number): number => {
@@ -67,6 +68,7 @@ const PackageInfoList: React.FC<InfoProps> = ({
   driverName,
   createdAt,
   updatedAt,
+  packageCode,
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -114,6 +116,12 @@ const PackageInfoList: React.FC<InfoProps> = ({
           <Typography className="text-gray-500 text-sm">出発予定</Typography>
           <Typography className="text-sm mt-1">
             {departureDate ? dayjs(departureDate).format("YYYY-MM-DD") : "未定"}{" "}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography className="text-gray-500 text-sm">管理番号</Typography>
+          <Typography className="text-sm mt-1">
+            {packageCode ?? "未設定"}
           </Typography>
         </Box>
       </Box>
