@@ -11,6 +11,7 @@ import InputBox from "@/components/Common/InputBox"; // 불필요한 import는 �
 import CSVUploadButton from "@/components/Common/CSVUploadButton";
 import CSVExportButton from "@/components/Common/CSVExportButton";
 import CSVModal from "@/components/Common/CSVModal";
+import ExcelManager from "@/components/Common/ExcelManager";
 
 interface CheckInData {
   checkinId: number;
@@ -119,6 +120,9 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
           title="新規顧客登録する"
         />
       </div>
+      {/* <div>
+        <ExcelManager />
+      </div> */}
       {/* CSVのDOWNLOADボタン */}
       {/* CSV管理MODAL */}
       <CSVModal
