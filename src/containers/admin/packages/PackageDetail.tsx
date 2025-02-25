@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
 import { PackageData } from "@/data/package/package";
+import { getPackageDetail } from "@/services/packagesService";
 
 const PackageDetail = () => {
   const { id } = useParams();
@@ -19,36 +19,12 @@ const PackageDetail = () => {
       return;
     }
 
-    // useEffect(()=>{
-    //   const fetchPackage2 = async () = {
-    //     const data = await get
-    //     setTripPackage(data);
-    //   }
-    //   fetchPackage2();
-    // },[]);
-
     const fetchPackage = async () => {
       try {
         const packageId = Number(id);
-        if (isNaN(packageId)) throw new Error("無効なパッケージID");
-        const res = await fetch(
-          `http://localhost:8080/api/packages/detail/${packageId}`
-        );
-        if (!res.ok) throw new Error("パッケージを取得できませんでした。");
-        const data: PackageData = await res.json();
-
-        setTripPackage({
-          ...data,
-          departureDate: data.departureDate
-            ? dayjs(data.departureDate).format("YYYY-MM-DD")
-            : "未定",
-          createdAt: data.createdAt
-            ? dayjs(data.createdAt).format("YYYY-MM-DD HH:mm")
-            : "不明",
-          updatedAt: data.updatedAt
-            ? dayjs(data.updatedAt).format("YYYY-MM-DD HH:mm")
-            : "不明",
-        });
+        if (isNaN(packageId)) throw new Error("無効なパッケージID"); // 無効なパッケージID
+        const data = await getPackageDetail(packageId);
+        setTripPackage(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {

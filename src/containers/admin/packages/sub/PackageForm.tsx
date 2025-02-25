@@ -5,6 +5,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { ReferenceData } from "@/data/package/package";
+import { getReferenceData } from "@/services/packagesService";
 
 import {
   TextField,
@@ -32,12 +34,6 @@ type PackageFormProps = {
   onSubmit?: (data: any) => void;
 };
 
-interface ReferenceData {
-  drivers: Array<{ driverId: number; driverName: string }>;
-  staffs: Array<{ staffId: number; staffName: string }>;
-  courses: Array<{ courseId: number; courseName: string }>;
-}
-
 const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
   const [formData, setFormData] = useState(
     initialData || {
@@ -64,19 +60,15 @@ const PackageForm: React.FC<PackageFormProps> = ({ initialData, onSubmit }) => {
       setFormData(initialData);
     }
   }, [initialData]);
+
+  // TODO::packageService.tsに共同化
   useEffect(() => {
     const fetchReferenceData = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:8080/api/packages/reference-data"
-        );
-        if (!res.ok) {
-          throw new Error("データの呼び出し失敗。");
-        }
-        const data: ReferenceData = await res.json();
+        const data = await getReferenceData();
         setReferenceData(data);
       } catch (error) {
-        console.error("Error fetching reference data:", error);
+        console.error("参照データ取得エラー:", error);
       }
     };
     fetchReferenceData();

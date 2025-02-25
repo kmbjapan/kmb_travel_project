@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import CheckInForm, { CheckInFormData } from "./sub/CheckInForm";
+import { updateCheckIn } from "@/services/checkInService";
 
 const CheckInEdit: React.FC = () => {
   const { id } = useParams();
@@ -45,30 +46,19 @@ const CheckInEdit: React.FC = () => {
   // チェックイン更新API呼び出しハンドラ
   const handleUpdate = async (updatedData: CheckInFormData) => {
     try {
-      // axios 사용하기
-      const response = await fetch(
-        `http://localhost:8080/api/checkin/edit/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            guestName: updatedData.guestName,
-            guestCount: updatedData.guestCount,
-            guestPhone: updatedData.guestPhone,
-            guestEmail: updatedData.guestEmail,
-            specialRequests: updatedData.specialRequests,
-            packageId: updatedData.packageId,
-            // 必要に応じて日付フォーマットを変換
-            departureDate: updatedData.packageDepature
-              ? dayjs(updatedData.packageDepature).format("YYYY-MM-DD")
-              : "",
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("チェックイン情報の更新に失敗しました。");
-      }
-      const result = await response.json();
+      const checkinId = Number(id);
+      const requestData = {
+        guestName: updatedData.guestName,
+        guestCount: updatedData.guestCount,
+        guestPhone: updatedData.guestPhone,
+        guestEmail: updatedData.guestEmail,
+        specialRequests: updatedData.specialRequests,
+        packageId: updatedData.packageId,
+        departureDate: updatedData.packageDepature
+          ? dayjs(updatedData.packageDepature).format("YYYY-MM-DD")
+          : "",
+      };
+      const result = await updateCheckIn(checkinId, requestData);
       console.log("チェックイン更新成功:", result);
       alert("顧客情報を修正しました。");
       window.location.href = "/admin/checkin";

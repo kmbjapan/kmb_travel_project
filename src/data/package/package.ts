@@ -14,3 +14,9 @@ export interface PackageData {
   updatedAt: string;
   currentSeats: number;
 }
+
+export interface ReferenceData {
+  drivers: Array<{ driverId: number; driverName: string }>;
+  staffs: Array<{ staffId: number; staffName: string }>;
+  courses: Array<{ courseId: number; courseName: string }>;
+}

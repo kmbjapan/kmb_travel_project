@@ -1,29 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import dayjs from "dayjs";
 import { Typography, Box, Paper, Button } from "@mui/material";
 import { Person, Sync, Phone, Mail } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import Buttons from "@/components/Common/Buttons";
 // status関数
-import { updateCheckInStatus } from "@/services/checkInService";
+import { deleteCheckIn, updateCheckInStatus } from "@/services/checkInService";
 import CircularProgress from "@mui/material/CircularProgress";
-
-interface CheckInData {
-  checkinId: number;
-  guestName: string;
-  guestPhone: string;
-  guestCount: number;
-  guestEmail: string;
-  specialRequests: string;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  departureDate: string;
-  packageName: string;
-  staffName: string;
-}
+import { CheckInData } from "@/data/checkin/checkIn";
 
 const CheckInInfoList: React.FC<CheckInData> = ({
   checkinId,
@@ -62,13 +47,7 @@ const CheckInInfoList: React.FC<CheckInData> = ({
   const handleDelete = async (id: number) => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/checkin/delete/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!res.ok) throw new Error("削除を失敗しました。");
+      const res = await deleteCheckIn(id);
       alert("顧客情報を削除しました。");
       window.location.href = "/admin/checkin";
     } catch (err) {

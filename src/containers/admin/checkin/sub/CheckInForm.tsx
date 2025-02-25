@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -14,6 +13,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import Buttons from "@/components/Common/Buttons";
+import { fetchPackagesByDate } from "@/services/packagesService";
 
 // チェックインフォームのデータ型
 export interface CheckInFormData {
@@ -58,26 +58,16 @@ const CheckInForm: React.FC<CheckInFormProps> = ({ initialData, onSubmit }) => {
 
   // 出発予定日が変更されたら、その日付に対応するパッケージを取得する
   useEffect(() => {
-    const fetchPackagesByDate = async () => {
+    const fetchPackages = async () => {
       if (!formData.packageDepature) {
         setAvailablePackages([]);
         return;
       }
-      try {
-        const res = await fetch(
-          `http://localhost:8080/api/packages/by-date?departure=${formData.packageDepature}`
-        );
-        if (!res.ok) {
-          throw new Error("パッケージデータの取得に失敗しました。");
-        }
-        const packages: Package[] = await res.json();
-        setAvailablePackages(packages);
-      } catch (error) {
-        console.error("パッケージ取得エラー:", error);
-      }
+      const packages = await fetchPackagesByDate(formData.packageDepature);
+      setAvailablePackages(packages);
     };
 
-    fetchPackagesByDate();
+    fetchPackages();
   }, [formData.packageDepature]);
 
   // 日付変更ハンドラ

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchCheckInList } from "@/services/getCheckInList";
+import { fetchCheckInList } from "@/services/checkInService";
 import Buttons from "@/components/Common/Buttons";
 import SearchBar from "@/components/Common/SearchBar";
 import CheckInTable from "./sub/CheckInTable";

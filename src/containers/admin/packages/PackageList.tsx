@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PackageData } from "@/data/package/package";
-import { getPackageList } from "@/services/packageService";
+import { getPackageList } from "@/services/packagesService";
 const PackageList = () => {
   const [packageData, setPackageData] = useState<PackageData[]>([]);
   const router = useRouter();

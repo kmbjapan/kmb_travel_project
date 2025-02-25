@@ -3,45 +3,18 @@
 import React from "react";
 import dayjs from "dayjs";
 import PackageForm from "./sub/PackageForm";
+import { createPackage } from "@/services/packagesService";
 
 const PackageCreate = () => {
   const handleCreate = async (data: any) => {
-    const requestData = {
-      packageName: data.packageName,
-      busNumber1: data.busNumber1,
-      busNumber2: data.busNumber2,
-      totalSeats: Number(data.totalSeats),
-      departureDate: data.departureDate
-        ? dayjs(data.departureDate).format("YYYY-MM-DD")
-        : "",
-      driverId: data.driverId,
-      courseId: data.courseId,
-      staffId: data.staffId,
-      status: 0,
-    };
-
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/packages/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("パッケージ作成に失敗しました");
-      }
-
-      const result = await response.json();
+      // サービス関数を呼び出してパッケージを作成 (서비스 함수를 호출하여 패키지 생성)
+      const result = await createPackage(data);
       window.location.href = "/admin/packages";
-      alert("パッケージが作成されました！");
-    } catch (error) {
+      alert("パッケージが作成されました！"); // 패키지가 생성되었습니다!
+    } catch (error: any) {
       console.error("エラー:", error);
-      alert("エラーが発生しました");
+      alert("エラーが発生しました"); // 오류가 발생했습니다.
     }
   };
 

@@ -17,7 +17,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PackageData } from "@/data/package/package";
-import { deleteSelectedPackages } from "@/services/packageService";
+import { deleteSelectedPackages } from "@/services/packagesService";
 
 // インターフェース定義 (인터페이스 정의)
 interface PackageTableProps {

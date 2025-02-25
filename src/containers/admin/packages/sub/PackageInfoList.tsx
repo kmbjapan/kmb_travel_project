@@ -7,6 +7,7 @@ import { TravelExplore } from "@mui/icons-material";
 import Buttons from "@/components/Common/Buttons";
 import { useRouter } from "next/navigation";
 import { PackageData } from "@/data/package/package";
+import { deleteSelectedPackages } from "@/services/packagesService";
 
 const computeStatus = (status: number): number => {
   return status;
@@ -61,13 +62,8 @@ const PackageInfoList: React.FC<PackageData> = ({
   const handleDelete = async (id: number) => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/packages/detail/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!res.ok) throw new Error("削除を失敗しました。");
+      const res = await deleteSelectedPackages([id]);
+      alert("パッケージを削除しました。");
       window.location.href = "/admin/packages";
     } catch (err) {
       setError((err as Error).message);

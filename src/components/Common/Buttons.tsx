@@ -6,7 +6,7 @@ interface ButtonsProps {
   onSearchClick?: () => void;
   onCreateClick?: () => void;
   onBackClick?: () => void;
-  onDeleteClick?: (id?: number) => void;
+  onDeleteClick?: (id: number) => Promise<void>; // id를 필수로 받도록 변경
   onEditClick?: () => void;
   onCheckInListClick?: () => void;
   onPackageDetailClick?: () => void;
@@ -69,7 +69,11 @@ const Buttons = ({
       {isDeleteVisible && onDeleteClick && (
         <Button
           variant="outlined"
-          onClick={() => onDeleteClick(id)}
+          onClick={() => {
+            if (id !== undefined) {
+              onDeleteClick(id);
+            }
+          }}
           color="error"
           startIcon={<Delete />}
         >

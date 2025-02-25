@@ -8,7 +8,8 @@ export interface CheckInData {
   status: number;
   createdAt: string;
   updatedAt: string;
-  departureDate: string;
+  departureDate: string | null;
   packageName: string;
   staffName: string;
+  packageId: number;
 }
