@@ -6,21 +6,12 @@ import Link from "next/link";
 // MUI
 import UserPageTest from "@/containers/user/UserpageTest";
 import { useEffect, useState } from "react";
-import { FaUserShield } from "react-icons/fa";
+import { FaUserCircle, FaUserShield } from "react-icons/fa";
+import { useUser } from "@/context/UserContext";
 
 export default function MainPage() {
   //　Date連動ステイト
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    fetch("http://localhost:8080/api/test")
-      .then((response) => response.text())
-      .then((data) => {
-        setMessage(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+  const { user, loading } = useUser();
 
   return (
     <div className="text-gray-800 p-8 h-full overflow-y-auto pb-24">
@@ -28,11 +19,18 @@ export default function MainPage() {
         <h1 className="text-2xl font-bold flex items-center">
           旅行会社プロジェクト
         </h1>
-
         <div className="flex items-center space-x-4">
-          <div className="text-red-500 ">
-            <h1>{message ? message : "Loading..."}</h1>
-          </div>
+          {loading ? (
+            <p className="text-gray-500">Loading...</p>
+          ) : user ? (
+            <div className="flex items-center text-blue-600 font-semibold">
+              <FaUserCircle className="size-8 mr-2" />
+              <p>{user.email}</p>
+              <p className="ml-2">様</p>
+            </div>
+          ) : (
+            <p className="text-red-500">ログインしていません。</p>
+          )}
 
           <Link
             href="/admin"

@@ -4,27 +4,11 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
-
-interface TripPackage {
-  packageId: number;
-  packageName: string;
-  departureDate: string;
-  busNumber1: string;
-  busNumber2: string;
-  status: number; // 0: "出発前", 1: "出発", 2: "完了"
-  currentSeats: number;
-  totalSeats: number;
-  courseName: string;
-  staffName: string;
-  driverName: string;
-  createdAt: string;
-  updatedAt: string;
-  packageCode: string;
-}
+import { PackageData } from "@/data/package/package";
 
 const PackageDetail = () => {
   const { id } = useParams();
-  const [tripPackage, setTripPackage] = useState<TripPackage | null>(null);
+  const [tripPackage, setTripPackage] = useState<PackageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,6 +19,14 @@ const PackageDetail = () => {
       return;
     }
 
+    // useEffect(()=>{
+    //   const fetchPackage2 = async () = {
+    //     const data = await get
+    //     setTripPackage(data);
+    //   }
+    //   fetchPackage2();
+    // },[]);
+
     const fetchPackage = async () => {
       try {
         const packageId = Number(id);
@@ -43,7 +35,7 @@ const PackageDetail = () => {
           `http://localhost:8080/api/packages/detail/${packageId}`
         );
         if (!res.ok) throw new Error("パッケージを取得できませんでした。");
-        const data: TripPackage = await res.json();
+        const data: PackageData = await res.json();
 
         setTripPackage({
           ...data,

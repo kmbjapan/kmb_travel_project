@@ -1,3 +1,5 @@
+"use client";
+
 import TopNavList from "./NaviList/TopNavList";
 import Logo from "./Logo/Logo";
 import { IconType } from "react-icons";

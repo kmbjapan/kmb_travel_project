@@ -1,38 +1,28 @@
 "use client";
 
 import Buttons from "@/components/Common/Buttons";
-//Components
 import SearchBar from "@/components/Common/SearchBar";
 import PackageTable from "@/containers/admin/packages/sub/PackageTable";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-//Next.js
 import { useEffect, useState } from "react";
-
+import { PackageData } from "@/data/package/package";
+import { getPackageList } from "@/services/packageService";
 const PackageList = () => {
-  const [pacageDate, setPackageDate] = useState([]);
+  const [packageData, setPackageData] = useState<PackageData[]>([]);
   const router = useRouter();
 
+  // APIからパッケージデータを取得 (API에서 패키지 데이터를 가져오기)
   useEffect(() => {
-    fetch("http://localhost:8080/api/packages")
-      .then((res) => res.json())
-      .then((data) => setPackageDate(data))
-      .catch((err) => console.error("fetchingエラー Packages :", err));
+    const fetchPackages = async () => {
+      const data = await getPackageList(); // ✅ 서비스 함수 호출
+      setPackageData(data);
+    };
+    fetchPackages();
   }, []);
 
-  // 検索機能の実装するところ
-  const handleSearch = (value: string) => {
-    console.log("検索語:", value);
-  };
-
-  // Fillter
-  const handleFilterChange = (value: string) => {
-    console.log("Fillter:", value);
-  };
-
   return (
-    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6 ">
+    <div className="space-y-4 border border-gray-300 p-4 rounded-lg p-6">
       <div className="flex items-center gap-4 mb-6">
         <SearchBar
           onSearch={(value) => console.log("検索語:", value)}
@@ -46,6 +36,7 @@ const PackageList = () => {
           />
         </div>
       </div>
+
       <div className="ml-auto">
         <Link href="/admin/packages/create" passHref>
           <Buttons
@@ -55,13 +46,12 @@ const PackageList = () => {
           />
         </Link>
       </div>
+
       <div>
-        <PackageTable packages={pacageDate} />
+        <PackageTable packages={packageData} />
       </div>
     </div>
   );
 };
 
 export default PackageList;
-
-// tailwind sx

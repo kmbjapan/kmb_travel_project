@@ -13,43 +13,32 @@ import {
   Chip,
   ButtonGroup,
   Checkbox,
-  Box,
 } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { CheckBox } from "@mui/icons-material";
+import { PackageData } from "@/data/package/package";
+import { deleteSelectedPackages } from "@/services/packageService";
 
-interface PackageData {
-  packageId: number;
-  packageName: string;
-  busNumber1: string;
-  busNumber2: string;
-  status: number;
-  departureDate: string;
-  totalSeats: number;
-  courseName: string;
-  driverName: string;
-  staffName: string;
-  packageCode?: string;
-}
-
+// インターフェース定義 (인터페이스 정의)
 interface PackageTableProps {
   packages: PackageData[];
 }
 
+// ステータスのテキスト取得関数 (상태 텍스트 반환 함수)
 const getStatusText = (status: number): string => {
   switch (status) {
     case 0:
-      return "出発前";
+      return "出発前"; // 출발 전
     case 1:
-      return "出発";
+      return "出発"; // 출발
     case 2:
-      return "完了";
+      return "完了"; // 완료
     default:
-      return "Unknown";
+      return "不明"; // 알 수 없음
   }
 };
 
+// ステータスの色取得関数 (상태 색상 반환 함수)
 const getStatusColor = (status: number): string => {
   switch (status) {
     case 0:
@@ -63,12 +52,10 @@ const getStatusColor = (status: number): string => {
   }
 };
 
-const PackageTable = ({ packages }: PackageTableProps) => {
-  // 2.CheckBox関連
-  // 2-1.配列の形で全体の情報を盛り込む
+const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
   const [selected, setSelected] = useState<number[]>([]);
 
-  // 2-2. CheckBox押すとpackageIdを選択したりとか、
+  // 個別チェックボックスのクリックハンドラー (개별 체크박스 클릭 핸들러)
   const handleCheckboxClick = (packageId: number) => {
     setSelected((prevSelected) =>
       prevSelected.includes(packageId)
@@ -76,7 +63,8 @@ const PackageTable = ({ packages }: PackageTableProps) => {
         : [...prevSelected, packageId]
     );
   };
-  // 2-3. CheckBox押すと全体選択する。
+
+  // 全体選択チェックボックスのクリックハンドラー (전체 선택 체크박스 클릭 핸들러)
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelecteds = packages.map((pkg) => pkg.packageId);
@@ -86,36 +74,17 @@ const PackageTable = ({ packages }: PackageTableProps) => {
     }
   };
 
-  // ...
-  useEffect(() => {
-    console.log("  ID 체쿠:", selected);
-  }, [selected]);
-
-  // 2-4. CheckBoxについてDeleteHandlerAPI要請
+  // 選択されたパッケージを削除 (선택된 패키지를 삭제)
   const handleDeleteSelected = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/api/packages/delete",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ packageIds: selected }),
-        }
-      );
-      if (response.ok) {
-        console.log("Delete Sucessed");
-        alert("**パッケージ**を削除しました。");
-        window.location.href = "/admin/packages";
-      } else {
-        // console.error("Delete Failed", response.status);
-        const errorData = await response.json();
-        alert(errorData.message || "パッケージで**顧客名簿**があります。");
-      }
-    } catch (error) {
-      console.error("Delete Error", error);
-      alert("削除のエラー");
+    if (selected.length === 0) {
+      alert("削除するパッケージを選択してください。"); // 삭제할 패키지를 선택하세요.
+      return;
+    }
+
+    const success = await deleteSelectedPackages(selected);
+    if (success) {
+      alert("パッケージを削除しました。"); // 패키지를 삭제했습니다.
+      window.location.href = "/admin/packages";
     }
   };
 
@@ -125,7 +94,6 @@ const PackageTable = ({ packages }: PackageTableProps) => {
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
-              {/* 2.CheckBox関連::全体クリックする */}
               <Checkbox
                 checked={
                   packages.length > 0 && selected.length === packages.length
@@ -134,12 +102,7 @@ const PackageTable = ({ packages }: PackageTableProps) => {
                   selected.length > 0 && selected.length < packages.length
                 }
                 onChange={handleSelectAllClick}
-                sx={{
-                  color: "blue",
-                  "&.Mui-checked": {
-                    color: "blue",
-                  },
-                }}
+                sx={{ color: "blue", "&.Mui-checked": { color: "blue" } }}
               />
             </TableCell>
             <TableCell>NO</TableCell>
@@ -154,27 +117,17 @@ const PackageTable = ({ packages }: PackageTableProps) => {
         <TableBody>
           {packages.map((pkg, index) => {
             const isItemSelected = selected.includes(pkg.packageId);
-            const computedStatus = pkg.status;
-            const safePackageCode = pkg.packageCode ?? "N/A"; // ✅ 기본값 "N/A" 설정
             return (
               <TableRow key={pkg.packageId} hover>
-                {/*  2.CheckBox関連:: 個別クリックする */}
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={isItemSelected}
                     onChange={() => handleCheckboxClick(pkg.packageId)}
-                    sx={{
-                      color: "blue",
-                      "&.Mui-checked": {
-                        color: "blue",
-                      },
-                    }}
+                    sx={{ color: "blue", "&.Mui-checked": { color: "blue" } }}
                   />
                 </TableCell>
-                {/*  フロントで番号を分ける */}
-                {/* <TableCell>{pkg.packageId}</TableCell> */}
                 <TableCell>{index + 1}</TableCell>
-                <TableCell sx={{ color: "primary.main", cursor: "pointer" }}>
+                <TableCell>
                   <Link
                     href={`/admin/packages/detail/${pkg.packageId}`}
                     passHref
@@ -191,13 +144,15 @@ const PackageTable = ({ packages }: PackageTableProps) => {
                 </TableCell>
                 <TableCell>
                   <Chip
-                    label={getStatusText(computedStatus)}
-                    color={getStatusColor(computedStatus) as any}
+                    label={getStatusText(pkg.status)}
+                    color={getStatusColor(pkg.status) as any}
                     size="small"
                   />
                 </TableCell>
+                {/* ✅ 관리(管理) 버튼 추가 */}
                 <TableCell>
                   <ButtonGroup size="small" className="mr-1">
+                    {/* 패키지 상세 페이지 이동 */}
                     <Link
                       href={`/admin/packages/detail/${pkg.packageId}`}
                       passHref
@@ -211,6 +166,7 @@ const PackageTable = ({ packages }: PackageTableProps) => {
                     </Link>
                   </ButtonGroup>
                   <ButtonGroup size="small">
+                    {/* 체크인 리스트 페이지 이동 */}
                     <Link
                       href={`/admin/checkin/packages/${pkg.packageId}`}
                       passHref

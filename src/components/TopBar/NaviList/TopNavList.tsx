@@ -1,3 +1,5 @@
+"use client";
+
 import { ClassNames } from "@emotion/react";
 import TopNavItem from "./NavItem/TopNavItem";
 import { FaUserShield, FaRegBuilding } from "react-icons/fa";

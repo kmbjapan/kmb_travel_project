@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Buttons from "@/components/Common/Buttons";
 import {
   ButtonGroup,
   Checkbox,
-  Chip,
   CircularProgress,
   Paper,
   Table,
@@ -16,74 +14,74 @@ import {
   TableRow,
 } from "@mui/material";
 import Link from "next/link";
+import Buttons from "@/components/Common/Buttons";
 import { updateCheckInStatus } from "@/services/checkInService";
+import { CheckInData } from "@/data/checkin/checkIn";
 
-interface CheckInData {
-  checkinId: number;
-  guestName: string;
-  guestPhone: string;
-  guestCount: number;
-  guestEmail: string;
-  specialRequests: string;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-  packageName: string;
-  departureDate: string;
-  staffName: string;
+interface CheckInTableProps {
+  checkinList: CheckInData[]; // ✅ 親コンポーネントからデータを受け取る
+  // ✅ `CheckInList.tsx`에서 데이터를 받아옴
 }
 
-interface CheckIntableProps {
-  checkinList: CheckInData[];
-}
-
-const CheckInTable = ({ checkinList }: CheckIntableProps) => {
-  // 로컬 상태에 props로 받은 checkinList를 저장
+const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
+  // ✅ ローカル状態にpropsで受け取ったデータを保存
+  // ✅ 로컬 상태에 props로 받은 데이터를 저장
   const [localCheckinList, setLocalCheckinList] =
     useState<CheckInData[]>(checkinList);
-  const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [loadingId, setLoadingId] = useState<number | null>(null); // ✅ 状態変更時のローディング管理
+  // ✅ 상태 변경 시 로딩 중인지 관리
 
-  // 부모로부터 checkinList가 변경되면 로컬 상태 업데이트
+  // ✅ 親コンポーネントからのデータ変更を監視してローカル状態を更新
+  // ✅ 부모 컴포넌트에서 받은 데이터가 변경되면 로컬 상태를 업데이트
   useEffect(() => {
     setLocalCheckinList(checkinList);
   }, [checkinList]);
 
-  // 체크인 상태 토글 함수
+  // ✅ ステータスを切り替える関数
+  // ✅ 체크인 상태를 변경하는 함수
   const toggleStatus = async (checkinId: number, currentStatus: number) => {
     const newStatus = currentStatus === 0 ? 1 : 0;
     try {
-      setLoadingId(checkinId); // 업데이트 시작: 해당 항목을 로딩 상태로 설정
+      setLoadingId(checkinId); // ✅ 更新開始: ローディング状態に設定
+      // ✅ 업데이트 시작: 해당 항목을 로딩 상태로 설정
       await updateCheckInStatus(checkinId, newStatus);
-      // 로컬 상태 업데이트: 해당 체크인 항목의 status 값 변경
+      // ✅ ローカル状態を更新: チェックインのステータスを変更
+      // ✅ 로컬 상태 업데이트: 해당 체크인 항목의 status 값 변경
       setLocalCheckinList((prevList) =>
         prevList.map((item) =>
           item.checkinId === checkinId ? { ...item, status: newStatus } : item
         )
       );
     } catch (error) {
-      console.error("상태 업데이트 에러:", error);
+      console.error("ステータス更新エラー:", error); // ✅ 상태 업데이트 에러
     } finally {
-      setLoadingId(null); // 업데이트 종료: 로딩 상태 초기화
+      setLoadingId(null); // ✅ 更新終了: ローディング状態を解除
+      // ✅ 업데이트 종료: 로딩 상태 초기화
     }
   };
 
+  // ✅ チェックインリストをID順にソート
+  // ✅ 체크인 리스트를 ID 순으로 정렬
   const sortedCheckinList = [...localCheckinList].sort(
     (a, b) => a.checkinId - b.checkinId
   );
 
-  // 2.CheckBox関連
-  // 2-1.配列の形で全体の情報を盛り込む
+  // ✅ チェックボックスの選択管理
+  // ✅ 체크박스 선택 상태 관리
   const [selected, setSelected] = useState<number[]>([]);
 
-  // 2-2. CheckBox押すとpackageIdを選択したりとか、
-  const handleCheckboxClick = (packageId: number) => {
+  // ✅ チェックボックスをクリックするとIDを選択・解除
+  // ✅ 체크박스를 클릭하면 ID를 선택/해제
+  const handleCheckboxClick = (checkinId: number) => {
     setSelected((prevSelected) =>
-      prevSelected.includes(packageId)
-        ? prevSelected.filter((id) => id !== packageId)
-        : [...prevSelected, packageId]
+      prevSelected.includes(checkinId)
+        ? prevSelected.filter((id) => id !== checkinId)
+        : [...prevSelected, checkinId]
     );
   };
-  // 2-3. CheckBox押すと全体選択する。
+
+  // ✅ "全選択" チェックボックスの処理
+  // ✅ "전체 선택" 체크박스 클릭 시 모든 ID 선택 또는 해제
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelecteds = checkinList.map((ckl) => ckl.checkinId);
@@ -93,12 +91,15 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
     }
   };
 
-  // ...
+  // ✅ 選択されたIDをデバッグ出力
+  // ✅ 선택된 ID를 콘솔에서 확인
   useEffect(() => {
-    console.log("  ID 체쿠:", selected);
+    console.log("選択されたID:", selected);
+    // ✅ "선택된 ID:" 콘솔 출력
   }, [selected]);
 
-  // 2-4. CheckBoxについてDeleteHandlerAPI要請
+  // ✅ 選択されたチェックインデータを削除
+  // ✅ 선택된 체크인 데이터를 삭제
   const handleDeleteSelected = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/checkin/delete", {
@@ -109,16 +110,16 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
         body: JSON.stringify({ checkInIds: selected }),
       });
       if (response.ok) {
-        console.log("Delete Sucessed");
+        console.log("削除成功"); // ✅ 삭제 성공
         alert("**顧客名簿**を削除しました。");
-        window.location.href = "/admin/checkin";
+        window.location.href = "/admin/checkin"; // ✅ 削除後にリロード
+        // ✅ 삭제 후 페이지 새로고침
       } else {
-        // console.error("Delete Failed", response.status);
         const errorData = await response.json();
-        alert(errorData.message || "削除のError。");
+        alert(errorData.message || "削除エラー");
       }
     } catch (error) {
-      console.error("Delete Error", error);
+      console.error("削除エラー:", error);
       alert("削除のエラー");
     }
   };
@@ -129,7 +130,8 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
-              {/* 2.CheckBox関連::全体クリックする */}
+              {/* ✅ 全選択のチェックボックス */}
+              {/* ✅ 전체 선택 체크박스 */}
               <Checkbox
                 checked={
                   checkinList.length > 0 &&
@@ -161,17 +163,11 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
             const isItemSelected = selected.includes(cki.checkinId);
             return (
               <TableRow key={cki.checkinId} hover>
-                {/* 2.CheckBox関連:: 個別クリックする */}
                 <TableCell padding="checkbox">
                   <Checkbox
                     checked={isItemSelected}
                     onChange={() => handleCheckboxClick(cki.checkinId)}
-                    sx={{
-                      color: "blue",
-                      "&.Mui-checked": {
-                        color: "blue",
-                      },
-                    }}
+                    sx={{ color: "blue", "&.Mui-checked": { color: "blue" } }}
                   />
                 </TableCell>
                 <TableCell>{index + 1}</TableCell>
@@ -204,6 +200,8 @@ const CheckInTable = ({ checkinList }: CheckIntableProps) => {
           })}
         </TableBody>
       </Table>
+      {/* ✅ 選択されたデータを削除するボタン */}
+      {/* ✅ 선택된 데이터를 삭제하는 버튼 */}
       <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} />
     </TableContainer>
   );

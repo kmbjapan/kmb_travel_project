@@ -69,16 +69,16 @@ export default function ExcelManager() {
 
   return (
     <div style={{ margin: "16px 0" }}>
-      <h2>Excel 관리</h2>
+      <h2>Excel管理</h2>
       <div style={{ marginBottom: "16px" }}>
         <Button variant="contained" onClick={handleDownload} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "엑셀 다운로드"}
+          {loading ? <CircularProgress size={24} /> : "Excel DownLoad"}
         </Button>
       </div>
       <div>
         <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
         <Button variant="contained" onClick={handleUpload} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "엑셀 업로드"}
+          {loading ? <CircularProgress size={24} /> : "Excel Upload"}
         </Button>
       </div>
     </div>

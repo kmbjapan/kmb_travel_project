@@ -6,23 +6,7 @@ import { Typography, Box, Paper, Chip } from "@mui/material";
 import { TravelExplore } from "@mui/icons-material";
 import Buttons from "@/components/Common/Buttons";
 import { useRouter } from "next/navigation";
-
-interface InfoProps {
-  packageId: number;
-  packageName: string;
-  departureDate: string;
-  busNumber1: string;
-  busNumber2: string;
-  status: number;
-  currentSeats: number;
-  totalSeats: number;
-  courseName: string;
-  staffName: string;
-  driverName: string;
-  createdAt: string;
-  updatedAt: string;
-  packageCode: string;
-}
+import { PackageData } from "@/data/package/package";
 
 const computeStatus = (status: number): number => {
   return status;
@@ -54,7 +38,7 @@ const getStatusColor = (status: number): string => {
   }
 };
 
-const PackageInfoList: React.FC<InfoProps> = ({
+const PackageInfoList: React.FC<PackageData> = ({
   packageId,
   packageName,
   departureDate,

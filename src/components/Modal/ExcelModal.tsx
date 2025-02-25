@@ -1,31 +1,28 @@
 "use client";
 
 import React from "react";
-import CSVExportButton from "@/components/Common/CSVExportButton";
-import CSVUploadButton from "@/components/Common/CSVUploadButton";
+import CSVExportButton from "@/components/Buttons/csv/CSVExportButton";
+import CSVUploadButton from "@/components/Buttons/csv/CSVUploadButton";
+import ExcelManager from "../Buttons/excel/ExcelManager";
 
-interface CSVModalProps {
+interface ExcelModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const CSVModal: React.FC<CSVModalProps> = ({ isOpen, onClose }) => {
+const ExcelModal: React.FC<ExcelModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null; // 모달이 닫혀 있으면 아무것도 렌더링하지 않음
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[580px]">
-        <h2 className="text-xl font-semibold mb-4">CSV管理</h2>
+        <h2 className="text-xl font-semibold mb-4">Excel資料管理</h2>
         <p className="text-gray-600 mb-4">
-          CSVのダウンロードまたはアップロードを行います。
+          Excelのダウンロードまたはアップロードを行います。
         </p>
 
         <div className="mb-4">
-          <CSVExportButton />
-        </div>
-
-        <div className="mb-4">
-          <CSVUploadButton />
+          <ExcelManager />
         </div>
 
         <div className="text-right">
@@ -41,4 +38,4 @@ const CSVModal: React.FC<CSVModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default CSVModal;
+export default ExcelModal;

@@ -1,4 +1,5 @@
 // src/services/checkInService.ts
+// チェックイン機能の関数-共同化
 import axios from "axios";
 
 export const updateCheckInStatus = async (
@@ -13,7 +14,7 @@ export const updateCheckInStatus = async (
     );
     return response.data;
   } catch (error) {
-    console.error("업데이트 실패:", error);
+    console.error("Update Fail:", error);
     throw error;
   }
 };
