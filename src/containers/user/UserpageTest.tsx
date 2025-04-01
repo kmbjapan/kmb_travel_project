@@ -16,8 +16,15 @@ import {
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import Link from "next/link";
+import { FaUserShield } from "react-icons/fa";
+//User汎用適応
+import { useSelector, UseSelector } from "react-redux";
+import type { RootState } from "@/store";
 
 const UserPageTest = () => {
+  const { user, loading } = useSelector((state: RootState) => state.user);
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const featuredDestinations = [
@@ -55,6 +62,17 @@ const UserPageTest = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+      {/* 条件門、勉強 */}
+      {/* {user && user.role === "admin" && ( */}
+      {user === null && (
+        <Link
+          href="/admin"
+          className="flex items-center font-semibold border px-4 py-2 rounded-full shadow-sm text-white bg-gray-800 hover:bg-gray-700"
+        >
+          <FaUserShield className="size-5 mr-1" />
+          管理者ページ
+        </Link>
+      )}
       <Box
         sx={{
           position: "relative",
@@ -158,125 +176,6 @@ const UserPageTest = () => {
           <ChevronRightIcon />
         </IconButton>
       </Box>
-
-      <Container
-        sx={{
-          py: 12,
-          textAlign: "center",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "10px",
-        }}
-      >
-        <Typography variant="h4" sx={{ textAlign: "center", mb: 6 }}>
-          人気旅行パッケージ
-        </Typography>
-        <Grid container spacing={4}>
-          {featuredDestinations.map((dest, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card
-                sx={{
-                  boxShadow: 3,
-                  borderRadius: "10px",
-                  transition: "transform 0.3s",
-                  "&:hover": { transform: "scale(1.05)" },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="220"
-                  image={dest.image}
-                  alt={dest.title}
-                  sx={{ objectFit: "cover" }} // ✅ 카드 이미지 크기 통일
-                />
-                <CardContent>
-                  <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
-                    {dest.title}
-                  </Typography>
-                  <Typography
-                    sx={{ color: "text.secondary", mb: 2, textAlign: "center" }}
-                  >
-                    {dest.description}
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      color: "primary.main",
-                      textAlign: "center",
-                    }}
-                  >
-                    {dest.price}から
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      mt: 3,
-                      width: "100%",
-                      fontSize: "16px", // ✅ 버튼 크기 통일
-                    }}
-                  >
-                    予約する
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      <Container
-        sx={{
-          py: 10,
-          textAlign: "center",
-          backgroundColor: "#f5f5f5",
-          borderRadius: "10px",
-          marginTop: "100px",
-        }}
-      >
-        <Typography variant="h4" sx={{ mb: 4 }}>
-          会社情報
-        </Typography>
-        <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ boxShadow: 3, borderRadius: "10px" }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  会社名
-                </Typography>
-                <Typography color="text.secondary">
-                  株式会社 旅行プロジェクト
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ boxShadow: 3, borderRadius: "10px" }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  住所
-                </Typography>
-                <Typography color="text.secondary">
-                  東京都渋谷区○○-○○
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ boxShadow: 3, borderRadius: "10px" }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  連絡先
-                </Typography>
-                <Typography color="text.secondary">
-                  電話: 03-1234-5678
-                </Typography>
-                <Typography color="text.secondary">
-                  メール: contact@travel.co.jp
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
     </Box>
   );
 };

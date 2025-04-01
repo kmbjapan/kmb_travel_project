@@ -7,7 +7,7 @@
       "create": "/create",
       "delete": "/delete",
       "referenceData": "/reference-data",
-      "byDate": "/by-Date"
+      "bydate": "/by-date"
     },
     "checkin": {
       "base": "/checkin",

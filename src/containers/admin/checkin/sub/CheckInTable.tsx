@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   ButtonGroup,
   Checkbox,
   CircularProgress,
@@ -20,19 +21,20 @@ import {
   updateCheckInStatus,
 } from "@/services/checkInService";
 import { CheckInData } from "@/data/checkin/checkIn";
+import { Delete } from "@mui/icons-material";
 
 interface CheckInTableProps {
-  checkinList: CheckInData[]; // 親コンポーネントからデータを受け取る(`CheckInList.tsx`에서 데이터를 받아옴)
+  checkinList: CheckInData[]; // 親コンポーネントからデータを受け取る
 }
 
 const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
-  // ローカル状態にpropsで受け取ったデータを保存(로컬 상태에 props로 받은 데이터를 저장)
+  // ローカル状態にpropsで受け取ったデータを保存
   const [localCheckinList, setLocalCheckinList] =
     useState<CheckInData[]>(checkinList);
-  // 状態変更時のローディング管理(상태 변경 시 로딩 중인지 관리)
+  // 状態変更時のローディング管理
   const [loadingId, setLoadingId] = useState<number | null>(null);
 
-  // 親コンポーネントからのデータ変更を監視してローカル状態を更新(부모 컴포넌트에서 받은 데이터가 변경되면 로컬 상태를 업데이트)
+  // 親コンポーネントからのデータ変更を監視してローカル状態を更新
   useEffect(() => {
     setLocalCheckinList(checkinList);
   }, [checkinList]);
@@ -41,9 +43,9 @@ const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
   const toggleStatus = async (checkinId: number, currentStatus: number) => {
     const newStatus = currentStatus === 0 ? 1 : 0;
     try {
-      setLoadingId(checkinId); // ✅ 更新開始: ローディング状態に設定(업데이트 시작: 해당 항목을 로딩 상태로 설정)
+      setLoadingId(checkinId); // ✅ 更新開始: ローディング状態に設定
       await updateCheckInStatus(checkinId, newStatus);
-      // ローカル状態を更新: チェックインのステータスを変更(로컬 상태 업데이트: 해당 체크인 항목의 status 값 변경)
+      // ローカル状態を更新: チェックインのステータスを変更
       setLocalCheckinList((prevList) =>
         prevList.map((item) =>
           item.checkinId === checkinId ? { ...item, status: newStatus } : item
@@ -53,19 +55,19 @@ const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
       console.error("ステータス更新エラー:", error);
     } finally {
       setLoadingId(null);
-      // 更新終了: ローディング状態を解除(업데이트 종료: 로딩 상태 초기화)
+      // 更新終了: ローディング状態を解除
     }
   };
 
-  // チェックインリストをID順にソート(체크인 리스트를 ID 순으로 정렬)
+  // チェックインリストをID順にソート
   const sortedCheckinList = [...localCheckinList].sort(
     (a, b) => a.checkinId - b.checkinId
   );
 
-  // チェックボックスの選択管理(체크박스 선택 상태 관리)
+  // チェックボックスの選択管理
   const [selected, setSelected] = useState<number[]>([]);
 
-  // チェックボックスをクリックするとIDを選択・解除(체크박스를 클릭하면 ID를 선택/해제)
+  // チェックボックスをクリックするとIDを選択・解除
   const handleCheckboxClick = (checkinId: number) => {
     setSelected((prevSelected) =>
       prevSelected.includes(checkinId)
@@ -74,7 +76,7 @@ const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
     );
   };
 
-  //  "全選択" チェックボックスの処理("전체 선택" 체크박스 클릭 시 모든 ID 선택 또는 해제)
+  //  "全選択" チェックボックスの処理
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelecteds = checkinList.map((ckl) => ckl.checkinId);
@@ -84,10 +86,16 @@ const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
     }
   };
 
-  // 選択されたチェックインデータを削除(선택된 체크인 데이터를 삭제)
+  // 選択されたチェックインデータを削除
   const handleDeleteSelected = async () => {
+    if (selected.length == 0) {
+      alert("選択してください。削除するアイテムがありません。");
+      return;
+    }
+
     try {
       await deleteCheckInSelected(selected);
+      console.log(selected);
       alert("**顧客名簿**を削除しました。");
       window.location.href = "/admin/checkin";
     } catch (error) {
@@ -102,7 +110,7 @@ const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
-              {/* ✅ 全選択のチェックボックス(전체 선택 체크박스) */}
+              {/* ✅ 全選択のチェックボックス */}
               <Checkbox
                 checked={
                   checkinList.length > 0 &&
@@ -171,8 +179,17 @@ const CheckInTable: React.FC<CheckInTableProps> = ({ checkinList }) => {
           })}
         </TableBody>
       </Table>
-      {/* ✅ 選択されたデータを削除するボタン(선택된 데이터를 삭제하는 버튼) */}
-      <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} />
+      {/* ✅ 選択されたデータを削除するボタン */}
+      {/* <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} /> */}
+      {/* 삭제 버튼 따로 만들기 */}
+      <Button
+        variant="outlined"
+        onClick={handleDeleteSelected}
+        color="error"
+        startIcon={<Delete />}
+      >
+        削除
+      </Button>
     </TableContainer>
   );
 };

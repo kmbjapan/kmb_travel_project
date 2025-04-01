@@ -10,7 +10,7 @@ interface CSVModalProps {
 }
 
 const CSVModal: React.FC<CSVModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null; // 모달이 닫혀 있으면 아무것도 렌더링하지 않음
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">

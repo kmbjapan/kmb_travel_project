@@ -6,7 +6,7 @@ interface ButtonsProps {
   onSearchClick?: () => void;
   onCreateClick?: () => void;
   onBackClick?: () => void;
-  onDeleteClick?: (id: number) => Promise<void>; // id를 필수로 받도록 변경
+  onDeleteClick?: (id: number) => Promise<void>;
   onEditClick?: () => void;
   onCheckInListClick?: () => void;
   onPackageDetailClick?: () => void;

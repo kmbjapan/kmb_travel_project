@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 // 환경 변수 우선: NEXT_PUBLIC_API_URL 있으면 사용, 없으면 endpoint.json의 baseUrl 사용
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || endpointData.baseUrl;
 const packagesBase = endpointData.resources.packages.base;
-const byDateEndpoint = endpointData.resources.packages.byDate;
+const byDateEndpoint = endpointData.resources.packages.bydate;
 
 /**
  * 01. 패키지 리스트를 가져오는 함수

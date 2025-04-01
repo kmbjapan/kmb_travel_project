@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import CheckInForm from "./sub/CheckInForm";
 
-// 체크인 폼 데이터 타입 정의
 interface CheckInFormData {
   guestName: string;
   guestCount: number;
@@ -16,12 +15,12 @@ interface CheckInFormData {
 }
 
 const CheckinCreate = () => {
-  const { id } = useParams(); // URL에서 패키지 ID 가져오기
+  const { id } = useParams();
   const [initialData, setInitialData] = useState<CheckInFormData | null>(null);
   const [loading, setLoading] = useState<boolean>(!!id);
 
   useEffect(() => {
-    if (!id) return; // URL에 ID가 없으면 패스
+    if (!id) return;
 
     const fetchPackageInfo = async () => {
       try {
@@ -43,9 +42,9 @@ const CheckinCreate = () => {
           guestEmail: "",
           specialRequests: "",
           // パッケージ
-          packageDepature: packageData.departureDate || null, // 출발 날짜
-          // 패키지아이디 받은거 여기다 저장하는듯 ㅇㅇ
-          packageId: String(id), // 패키지 ID (string 변환)
+          packageDepature: packageData.departureDate || null,
+
+          packageId: String(id),
         });
       } catch (error) {
         console.error("パッケージ情報取得エラー:", error);

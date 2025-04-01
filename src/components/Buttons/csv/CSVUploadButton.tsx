@@ -6,14 +6,12 @@ const CSVUploadButton = () => {
   const [fileName, setFileName] =
     useState<string>("ファイルを選択してください。");
 
-  // 파일 선택 이벤트 핸들러
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setFileName(event.target.files[0].name);
     }
   };
 
-  // CSV 업로드 핸들러
   const handleUpload = async () => {
     const fileInput = document.getElementById(
       "csvFileInput"
@@ -37,7 +35,7 @@ const CSVUploadButton = () => {
       }
 
       alert("CSVのupload成功!");
-      setFileName("ファをイル選択してください"); // 업로드 후 초기화
+      setFileName("ファをイル選択してください");
     } catch (error) {
       console.error("CSV upload Error:", error);
       alert("CSV upload failed");

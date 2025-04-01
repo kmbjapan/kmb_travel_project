@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -9,15 +11,23 @@ import {
   TextField,
 } from "@mui/material";
 
-interface AutuModalProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-const AutuModal: React.FC<AutuModalProps> = ({ open, onClose }) => {
+const RegisterModal = () => {
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  const handleOpen = () => {
+    setOpen(true);
+    setMessage("");
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEmail("");
+    setPassword("");
+    setMessage("");
+  };
 
   const handleRegister = async () => {
     try {
@@ -28,51 +38,67 @@ const AutuModal: React.FC<AutuModalProps> = ({ open, onClose }) => {
           password,
         }
       );
-      setMessage(response.data); // "회원가입 성공!" 메시지 표시
+      setMessage("✅ 登録成功: " + response.data);
+      setEmail("");
+      setPassword("");
     } catch (error: unknown) {
-      // ✅ error 타입을 unknown으로 지정하여 TypeScript 오류 해결
       if (axios.isAxiosError(error)) {
-        setMessage(error.response?.data || "회원가입 실패");
+        setMessage(error.response?.data || "❌ 登録失敗");
       } else {
-        setMessage("알 수 없는 오류 발생");
+        setMessage("❌ 不明なエラーが発生しました");
       }
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>管理者アカウント登録</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="アカウント"
-          type="email"
-          fullWidth
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-3"
-        />
-        <TextField
-          label="パスワード"
-          type="password"
-          fullWidth
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mb-3"
-        />
-        {message && <p className="text-red-500">{message}</p>}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          戻る
-        </Button>
-        <Button onClick={handleRegister} color="primary" variant="contained">
-          新規登録
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOpen}
+        sx={{ mb: 2 }}
+      >
+        アカウント作成
+      </Button>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>管理者アカウント登録</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="アカウント（メール）"
+            type="email"
+            fullWidth
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            margin="dense"
+          />
+          <TextField
+            label="パスワード"
+            type="password"
+            fullWidth
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            margin="dense"
+          />
+          {message && (
+            <p style={{ color: message.includes("成功") ? "green" : "red" }}>
+              {message}
+            </p>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            戻る
+          </Button>
+          <Button onClick={handleRegister} color="primary" variant="contained">
+            新規登録
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
-export default AutuModal;
+export default RegisterModal;

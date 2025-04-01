@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TextField, Button, Card } from "@mui/material";
 import { MdAdminPanelSettings } from "react-icons/md";
 import axios from "axios";
+import Link from "next/link";
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -22,11 +23,9 @@ const LogIn = () => {
 
       const { token, role } = response.data;
 
-      // ✅ JWT 토큰을 LocalStorage에 저장
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
 
-      // ✅ 역할(Role)에 따라 페이지 이동
       if (role === "ADMIN") {
         window.location.href = "/admin";
       } else {
@@ -44,11 +43,9 @@ const LogIn = () => {
       <Card className="p-8 w-full max-w-md shadow-lg rounded-2xl bg-white">
         <h2 className="text-center text-3xl font-bold mb-6 text-gray-800 flex items-center justify-center gap-2">
           <MdAdminPanelSettings className="text-blue-600 text-3xl" />
-          管理者ログイン
-        </h2>
-        <h2 className="text-center text-2xl font-bold mb-6 text-gray-800">
           MinnanoTravel
         </h2>
+
         <form className="space-y-4">
           <TextField
             label="アカウント"
@@ -77,6 +74,7 @@ const LogIn = () => {
             ログイン
           </Button>
         </form>
+        <Link href="/register">会員登録</Link>
       </Card>
     </div>
   );

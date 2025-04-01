@@ -8,13 +8,12 @@ export default function ExcelManager() {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 엑셀 다운로드 함수
   const handleDownload = async () => {
     try {
       setLoading(true);
       const response = await fetch("http://localhost:8080/api/excel/download");
       if (!response.ok) {
-        alert("엑셀 파일 다운로드 실패");
+        alert("download failed");
         return;
       }
       const blob = await response.blob();
@@ -26,8 +25,8 @@ export default function ExcelManager() {
       a.click();
       a.remove();
     } catch (error) {
-      console.error("다운로드 에러:", error);
-      alert("다운로드 중 에러 발생");
+      console.error("dwonload error:", error);
+      alert("download error");
     } finally {
       setLoading(false);
     }
@@ -40,10 +39,9 @@ export default function ExcelManager() {
     }
   };
 
-  // 엑셀 업로드 함수
   const handleUpload = async () => {
     if (!uploadFile) {
-      alert("업로드할 파일을 선택해주세요.");
+      alert("fileを選択ください。");
       return;
     }
     try {
@@ -55,12 +53,12 @@ export default function ExcelManager() {
         body: formData,
       });
       if (response.ok) {
-        alert("엑셀 파일 업로드 성공");
+        alert("Exel upload susscess");
       } else {
-        alert("엑셀 파일 업로드 실패");
+        alert("Exel upload failed");
       }
     } catch (error) {
-      console.error("업로드 에러:", error);
+      console.error("upload error:", error);
       alert("업로드 중 에러 발생");
     } finally {
       setLoading(false);

@@ -2,8 +2,6 @@
 
 import { Driver } from "./Driver";
 
-// 프론트 데이터 정의
-
 export const fetchDrives = async (): Promise<Driver[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {

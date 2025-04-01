@@ -1,5 +1,6 @@
 "use client";
 
+import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import PackageInfoList from "@/containers/admin/packages/sub/PackageInfoList";
@@ -8,35 +9,43 @@ import { getPackageDetail } from "@/services/packagesService";
 
 const PackageDetail = () => {
   const { id } = useParams();
-  const [tripPackage, setTripPackage] = useState<PackageData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!id) {
-      setError("パッケージのIDがありません。");
-      setLoading(false);
-      return;
-    }
+  // // const [tripPackage, setTripPackage] = useState<PackageData | null>(null);
+  // // useEffect(() => {
+  // //   if (!id) {
+  // //     setError("パッケージのIDがありません。");
+  // //     setLoading(false);
+  // //     return;
+  // //   }
 
-    const fetchPackage = async () => {
-      try {
-        const packageId = Number(id);
-        if (isNaN(packageId)) throw new Error("無効なパッケージID"); // 無効なパッケージID
-        const data = await getPackageDetail(packageId);
-        setTripPackage(data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // //   const fetchPackage = async () => {
+  // //     try {
+  // //       const packageId = Number(id);
+  // //       if (isNaN(packageId)) throw new Error("無効なパッケージID"); // 無効なパッケージID
+  // //       const data = await getPackageDetail(packageId);
+  // //       setTripPackage(data);
+  // //     } catch (err) {
+  // //       setError((err as Error).message);
+  // //     } finally {
+  // //       setLoading(false);
+  // //     }
+  // //   };
 
-    fetchPackage();
-  }, [id]);
+  // //   fetchPackage();
+  // // }, [id]);
+  const {
+    data: tripPackage,
+    error,
+    isLoading,
+  } = useSWR(id ? `/api/packages/${id}` : null, () =>
+    getPackageDetail(Number(id))
+  );
 
-  if (loading) return <div>ロード中...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <div>ロード中...</div>;
+  if (error)
+    return <div>{error.message || "データの取得に失敗しました。"}</div>;
   if (!tripPackage) return <div>データがありません。</div>;
 
   return (

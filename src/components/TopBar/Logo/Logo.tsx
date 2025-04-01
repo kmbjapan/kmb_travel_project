@@ -3,8 +3,10 @@
 //Icon
 import { IconType } from "react-icons";
 import { useEffect, useState } from "react";
-import { useUser } from "@/context/UserContext";
+// import { useUser } from "@/context/UserContext";
 import { FaUserCircle } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 interface LogoProps {
   title: string;
@@ -12,7 +14,8 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ title, icon: Icon }) => {
-  const { user, loading } = useUser();
+  // const { user, loading } = useUser();
+  const { user, loading } = useSelector((state: RootState) => state.user);
 
   return (
     <div className="flex items-center text-2xl font-bold">

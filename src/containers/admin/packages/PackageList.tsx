@@ -9,13 +9,13 @@ import { useEffect, useState } from "react";
 import { PackageData } from "@/data/package/package";
 import { getPackageList } from "@/services/packagesService";
 const PackageList = () => {
-  const [packageData, setPackageData] = useState<PackageData[]>([]);
   const router = useRouter();
 
-  // APIからパッケージデータを取得 (API에서 패키지 데이터를 가져오기)
+  // // APIからパッケージデータを取得
+  const [packageData, setPackageData] = useState<PackageData[]>([]);
   useEffect(() => {
     const fetchPackages = async () => {
-      const data = await getPackageList(); // ✅ 서비스 함수 호출
+      const data = await getPackageList();
       setPackageData(data);
     };
     fetchPackages();

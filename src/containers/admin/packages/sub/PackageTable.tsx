@@ -13,32 +13,34 @@ import {
   Chip,
   ButtonGroup,
   Checkbox,
+  Button,
 } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PackageData } from "@/data/package/package";
 import { deleteSelectedPackages } from "@/services/packagesService";
+import { Delete } from "@mui/icons-material";
 
-// インターフェース定義 (인터페이스 정의)
+// インターフェース定義
 interface PackageTableProps {
   packages: PackageData[];
 }
 
-// ステータスのテキスト取得関数 (상태 텍스트 반환 함수)
+// ステータスのテキスト取得関数
 const getStatusText = (status: number): string => {
   switch (status) {
     case 0:
-      return "出発前"; // 출발 전
+      return "出発前";
     case 1:
-      return "出発"; // 출발
+      return "出発";
     case 2:
-      return "完了"; // 완료
+      return "完了";
     default:
-      return "不明"; // 알 수 없음
+      return "不明";
   }
 };
 
-// ステータスの色取得関数 (상태 색상 반환 함수)
+// ステータスの色取得関数
 const getStatusColor = (status: number): string => {
   switch (status) {
     case 0:
@@ -55,7 +57,7 @@ const getStatusColor = (status: number): string => {
 const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
   const [selected, setSelected] = useState<number[]>([]);
 
-  // 個別チェックボックスのクリックハンドラー (개별 체크박스 클릭 핸들러)
+  // 個別チェックボックスのクリックハンドラー
   const handleCheckboxClick = (packageId: number) => {
     setSelected((prevSelected) =>
       prevSelected.includes(packageId)
@@ -64,7 +66,7 @@ const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
     );
   };
 
-  // 全体選択チェックボックスのクリックハンドラー (전체 선택 체크박스 클릭 핸들러)
+  // 全体選択チェックボックスのクリックハンドラー
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelecteds = packages.map((pkg) => pkg.packageId);
@@ -74,16 +76,16 @@ const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
     }
   };
 
-  // 選択されたパッケージを削除 (선택된 패키지를 삭제)
+  // 選択されたパッケージを削除
   const handleDeleteSelected = async () => {
     if (selected.length === 0) {
-      alert("削除するパッケージを選択してください。"); // 삭제할 패키지를 선택하세요.
+      alert("削除するパッケージを選択してください。");
       return;
     }
 
     const success = await deleteSelectedPackages(selected);
     if (success) {
-      alert("パッケージを削除しました。"); // 패키지를 삭제했습니다.
+      alert("パッケージを削除しました。");
       window.location.href = "/admin/packages";
     }
   };
@@ -149,10 +151,9 @@ const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
                     size="small"
                   />
                 </TableCell>
-                {/* ✅ 관리(管理) 버튼 추가 */}
+
                 <TableCell>
                   <ButtonGroup size="small" className="mr-1">
-                    {/* 패키지 상세 페이지 이동 */}
                     <Link
                       href={`/admin/packages/detail/${pkg.packageId}`}
                       passHref
@@ -166,7 +167,6 @@ const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
                     </Link>
                   </ButtonGroup>
                   <ButtonGroup size="small">
-                    {/* 체크인 리스트 페이지 이동 */}
                     <Link
                       href={`/admin/checkin/packages/${pkg.packageId}`}
                       passHref
@@ -185,7 +185,15 @@ const PackageTable: React.FC<PackageTableProps> = ({ packages }) => {
           })}
         </TableBody>
       </Table>
-      <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} />
+      {/* <Buttons isDeleteVisible={true} onDeleteClick={handleDeleteSelected} /> */}
+      <Button
+        variant="outlined"
+        onClick={handleDeleteSelected}
+        color="error"
+        startIcon={<Delete />}
+      >
+        削除
+      </Button>
     </TableContainer>
   );
 };

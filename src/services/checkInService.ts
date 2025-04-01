@@ -79,7 +79,7 @@ export const updateCheckInStatus = async (
 //04. Delete
 export const deleteCheckIn = async (checkinId: number): Promise<boolean> => {
   try {
-    const deleteEndpoint = endpointData.resources.checkin.delete; // endpoint.json에 추가되어 있어야 함
+    const deleteEndpoint = endpointData.resources.checkin.delete;
     const url = `${baseUrl}${checkinBase}${deleteEndpoint}/${checkinId}`;
     await axios.delete(url);
     return true;

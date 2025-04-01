@@ -1,5 +1,6 @@
 "use client";
-
+// UseEffect ー＞ UseSWRで切り替え、作業
+// import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchCheckInList } from "@/services/checkInService";
@@ -17,23 +18,26 @@ interface CheckInListProps {
 }
 
 const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
-  // ✅ チェックインデータを保存する状態
-  const [checkinData, setCheckinData] = useState<CheckInData[]>([]);
-  // ✅ CSVモーダルの状態を管理
+  // CSVモーダルの状態を管理
   const [isCSVModalOpen, setCSVModalOpen] = useState(false);
-  // ✅ Excelモーダルの状態を管理
+  // Excelモーダルの状態を管理
   const [isExcelModalOpen, setExcelModalOpen] = useState(false);
-  // ✅ Next.jsのルーターを使用
+  // Next.jsのルーターを使用
   const router = useRouter();
 
-  // ✅ チェックインデータを取得
-  // ✅ 체크인 데이터를 가져오기
+  // チェックインデータを保存する状態 -> useEffectをuseSWRで変換
+  const [checkinData, setCheckinData] = useState<CheckInData[]>([]);
+  // useEffectをuseSWRで変換
   useEffect(() => {
     fetchCheckInList(id).then(setCheckinData);
   }, [id]);
+  // const { data: checkinData = [], error } = useSWR(
+  //   id ? `/api/checkin/${id}` : "/api/checkin",
+  //   () => fetchCheckInList(id)
+  // );
 
-  // ✅ パッケージ情報の抽出 (id がある場合のみ設定)
-  // ✅ 패키지 정보 추출 (id가 있을 때만 설정)
+  // パッケージ情報の抽出 (id がある場合のみ設定)
+
   const packageInfo =
     id && checkinData.length > 0
       ? {
@@ -45,8 +49,8 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
 
   return (
     <div className="space-y-4 border border-gray-300 p-6 rounded-lg">
-      {/* ✅ パッケージ情報入力フィールド */}
-      {/* ✅ 패키지 정보 입력 필드 */}
+      {/* パッケージ情報入力フィールド */}
+
       <div className="flex items-center gap-4 mb-6">
         <div className="grid grid-cols-2 gap-1">
           <InputBox
@@ -63,19 +67,20 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
         </div>
       </div>
 
-      {/* ✅ 新しいチェックインデータを登録するボタン */}
-      {/* ✅ 새로운 체크인 데이터를 등록하는 버튼 */}
+      {/* 新しいチェックインデータを登録するボタン */}
+
       <Buttons
+        isCreatePage={true}
         onCreateClick={() =>
           router.push(
             id ? `/admin/checkin/create/${id}` : "/admin/checkin/create"
           )
         }
-        title="新規顧客登録する"
+        title="新規登録"
       />
 
-      {/* ✅ Excel & CSV管理モーダル */}
-      {/* ✅ Excel & CSV 관리 모달 */}
+      {/* Excel & CSV管理モーダル */}
+
       <ExcelModal
         isOpen={isExcelModalOpen}
         onClose={() => setExcelModalOpen(false)}
@@ -85,8 +90,8 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
         onClose={() => setCSVModalOpen(false)}
       />
 
-      {/* ✅ CSV & Excel 管理ボタン */}
-      {/* ✅ CSV & Excel 관리 버튼 */}
+      {/* CSV & Excel 管理ボタン */}
+
       <div className="flex justify-end">
         <button
           className="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 shadow"
@@ -103,7 +108,7 @@ const CheckInList: React.FC<CheckInListProps> = ({ id }) => {
       </div>
 
       {/* ✅ チェックインデータテーブル */}
-      {/* ✅ 체크인 데이터 테이블 */}
+
       <CheckInTable checkinList={checkinData} />
     </div>
   );
