@@ -19,4 +19,4 @@ export type RootState = ReturnType<typeof store.getState>;
 // 日本語: ディスパッチの型をエクスポート
 // 한국어: 디스패치 타입을 내보냅니다
 export type AppDispatch = typeof store.dispatch;
-// test
+// tests
