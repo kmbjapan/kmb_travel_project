@@ -1,0 +1,20 @@
+{
+  "baseUrl": "http://localhost:8080/api",
+  "resources": {
+    "packages": {
+      "base": "/packages",
+      "detail": "/detail",
+      "create": "/create",
+      "delete": "/delete",
+      "referenceData": "/reference-data",
+      "bydate": "/by-date"
+    },
+    "checkin": {
+      "base": "/checkin",
+      "detail": "/detail",
+      "status": "/status",
+      "delete": "/delete",
+      "edit": "/edit"
+    }
+  }
+}
