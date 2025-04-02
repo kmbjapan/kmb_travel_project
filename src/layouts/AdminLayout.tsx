@@ -11,13 +11,16 @@ import { useEffect } from "react";
 import { fetchUser } from "@/store/slices/userSlice";
 import { AppDispatch } from "@/store";
 import { useDispatch } from "react-redux";
+import { usePathname } from "next/navigation";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  // User情報useEffect
+  // User情報 useEffect
   const dispatch = useDispatch<AppDispatch>();
+  const pathname = usePathname();
+
   useEffect(() => {
     dispatch(fetchUser());
-  }, [dispatch]);
+  }, [pathname]);
 
   return (
     <div className="flex h-screen flex-col">

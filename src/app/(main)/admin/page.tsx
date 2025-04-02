@@ -24,33 +24,33 @@ const AdminPage = () => {
     router.push("/login");
   };
 
-  useEffect(() => {
-    // 유저 로딩 끝났고, 유저 없거나 권한 없는 경우
-    const userRole = user?.role?.toUpperCase() ?? "";
-    const isAllowed = allowedRoles.includes(userRole);
+  // useEffect(() => {
+  //   // 유저 로딩 끝났고, 유저 없거나 권한 없는 경우
+  //   const userRole = user?.role?.toUpperCase() ?? "";
+  //   const isAllowed = allowedRoles.includes(userRole);
 
-    if (!loading && (!user || !isAllowed) && !hasAlerted.current) {
-      console.log("접근 거부된 역할:", user?.role);
-      setAlertOpen(true);
-      hasAlerted.current = true;
-    }
-  }, [user, loading]);
+  //   if (!loading && (!user || !isAllowed) && !hasAlerted.current) {
+  //     console.log("접근 거부된 역할:", user?.role);
+  //     setAlertOpen(true);
+  //     hasAlerted.current = true;
+  //   }
+  // }, [user, loading]);
 
-  const userRole = user?.role?.toUpperCase() ?? "";
-  const isAllowed = allowedRoles.includes(userRole);
+  // const userRole = user?.role?.toUpperCase() ?? "";
+  // const isAllowed = allowedRoles.includes(userRole);
 
-  if (!user || !isAllowed) {
-    return (
-      <>
-        <AlertWindow
-          open={alertOpen}
-          onClose={handleAlertClose}
-          title="Access Denied"
-          message="あなたは、管理者ではありません。"
-        />
-      </>
-    );
-  }
+  // if (!user || !isAllowed) {
+  //   return (
+  //     <>
+  //       <AlertWindow
+  //         open={alertOpen}
+  //         onClose={handleAlertClose}
+  //         title="Access Denied"
+  //         message="あなたは、管理者ではありません。"
+  //       />
+  //     </>
+  //   );
+  // }
 
   return (
     <AdminLayout>
